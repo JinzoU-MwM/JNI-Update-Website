@@ -86,7 +86,7 @@ const BlogModule = {
     if (articles.length > 0) {
       this.renderArticleCards(blogGrid, articles);
     } else {
-      blogGrid.innerHTML = '<p class="no-articles">Tidak ada artikel tersedia.</p>';
+      blogGrid.innerHTML = '<div class="col-12 text-center py-5"><p class="text-muted fs-5">Belum ada artikel terbaru.</p></div>';
     }
   },
 

@@ -151,6 +151,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // =====================================================
 // POST Handlers
 // =====================================================
+// Helper to handle file uploads
+function handleFileUpload($file, $destinationFolder) {
+    if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+        return null;
+    }
+
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    $maxSize = 5 * 1024 * 1024; // 5MB
+
+    $fileName = $file['name'];
+    $fileSize = $file['size'];
+    $fileTmp = $file['tmp_name'];
+    $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+    if (!in_array($fileExt, $allowedExtensions)) {
+        return ['error' => 'Invalid file type. Only JPG, PNG, WEBP allowed.'];
+    }
+
+    if ($fileSize > $maxSize) {
+        return ['error' => 'File too large. Max 5MB.'];
+    }
+
+    // Generate unique filename
+    $newFileName = 'thumb_' . time() . '_' . uniqid() . '.' . $fileExt;
+    $destination = $destinationFolder . $newFileName;
+
+    if (move_uploaded_file($fileTmp, $destination)) {
+        // Return web path (remove simple '../' if needed, here we assume it maps correctly)
+        // Adjusting path to remove the leading '../' for DB storage if it's relative to root
+        return 'uploads/thumbnails/' . $newFileName;
+    }
+
+    return ['error' => 'Failed to move uploaded file.'];
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     
@@ -160,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         switch ($action) {
             case 'create':
                 // Validate required fields
-                $required = ['title', 'slug', 'category', 'image_url', 'content'];
+                $required = ['title', 'category']; // Removed image_url from strict required list as file might be provided
                 foreach ($required as $field) {
                     if (empty($_POST[$field])) {
                         echo json_encode(['success' => false, 'error' => "Field '$field' is required"]);
@@ -170,13 +205,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Sanitize input
                 $title = trim($_POST['title']);
-                $slug = preg_replace('/[^a-z0-9\-]/', '', strtolower(trim($_POST['slug'])));
+                $slug = !empty($_POST['slug']) ? 
+                        preg_replace('/[^a-z0-9\-]/', '', strtolower(trim($_POST['slug']))) : 
+                        preg_replace('/[^a-z0-9\-]/', '', strtolower($title));
+                        
                 $category = trim($_POST['category']);
-                $imageUrl = filter_var($_POST['image_url'], FILTER_SANITIZE_URL);
                 $excerpt = trim($_POST['excerpt'] ?? '');
                 $content = $_POST['content']; // Allow HTML
                 $readTime = trim($_POST['read_time'] ?? '5 menit baca');
                 $author = $_SESSION['admin']['username'];
+                
+                // Handle Image Upload
+                $imageUrl = filter_var($_POST['image_url'] ?? '', FILTER_SANITIZE_URL);
+                
+                if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
+                    $uploadResult = handleFileUpload($_FILES['featured_image'], __DIR__ . '/../uploads/thumbnails/');
+                    if (is_array($uploadResult) && isset($uploadResult['error'])) {
+                        echo json_encode(['success' => false, 'error' => $uploadResult['error']]);
+                        exit;
+                    }
+                    if ($uploadResult) {
+                        $imageUrl = $uploadResult;
+                    }
+                }
+
+                if (empty($imageUrl)) {
+                     echo json_encode(['success' => false, 'error' => "Image is required (URL or File)"]);
+                     exit;
+                }
                 
                 // SEO fields
                 $metaTitle = trim($_POST['meta_title'] ?? '');
@@ -188,8 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $checkStmt = $pdo->prepare("SELECT id FROM articles WHERE slug = :slug");
                 $checkStmt->execute([':slug' => $slug]);
                 if ($checkStmt->fetch()) {
-                    echo json_encode(['success' => false, 'error' => 'Slug already exists']);
-                    exit;
+                    $slug = $slug . '-' . time(); // Auto-resolve duplicate slug
                 }
                 
                 // Insert article
@@ -233,10 +288,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $title = trim($_POST['title']);
                 $slug = preg_replace('/[^a-z0-9\-]/', '', strtolower(trim($_POST['slug'])));
                 $category = trim($_POST['category']);
-                $imageUrl = filter_var($_POST['image_url'], FILTER_SANITIZE_URL);
                 $excerpt = trim($_POST['excerpt'] ?? '');
                 $content = $_POST['content'];
                 $readTime = trim($_POST['read_time'] ?? '5 menit baca');
+                
+                // Handle Image Upload
+                $imageUrl = filter_var($_POST['image_url'] ?? '', FILTER_SANITIZE_URL);
+                
+                if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
+                    $uploadResult = handleFileUpload($_FILES['featured_image'], __DIR__ . '/../uploads/thumbnails/');
+                    if (is_array($uploadResult) && isset($uploadResult['error'])) {
+                        echo json_encode(['success' => false, 'error' => $uploadResult['error']]);
+                        exit;
+                    }
+                    if ($uploadResult) {
+                        $imageUrl = $uploadResult;
+                    }
+                }
                 
                 // SEO fields
                 $metaTitle = trim($_POST['meta_title'] ?? '');
@@ -248,8 +316,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $checkStmt = $pdo->prepare("SELECT id FROM articles WHERE slug = :slug AND id != :id");
                 $checkStmt->execute([':slug' => $slug, ':id' => $id]);
                 if ($checkStmt->fetch()) {
-                    echo json_encode(['success' => false, 'error' => 'Slug already used by another article']);
-                    exit;
+                     echo json_encode(['success' => false, 'error' => 'Slug already used by another article']);
+                     exit;
                 }
                 
                 // Update article

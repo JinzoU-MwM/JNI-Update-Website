@@ -4,6 +4,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Select elements
     const tabButtons = document.querySelectorAll('.tab-btn');
     const serviceCards = document.querySelectorAll('.services-page .service-card');
 

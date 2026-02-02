@@ -37,6 +37,7 @@ const AdminDashboard = {
         this.deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
         this.setupNavigation();
         this.setupEventListeners();
+        this.setupTinyMCE();
         this.setupSEOScoring();
         this.setCurrentDate();
 
@@ -135,11 +136,100 @@ const AdminDashboard = {
     // =====================================================
     // Event Listeners
     // =====================================================
+    // =====================================================
+    // TinyMCE Setup
+    // =====================================================
+    setupTinyMCE() {
+        tinymce.init({
+            selector: '#articleContent',
+            plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+            menubar: 'file edit view insert format tools table help',
+            toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+            toolbar_sticky: true,
+            autosave_ask_before_unload: true,
+            autosave_interval: '30s',
+            autosave_prefix: '{path}{query}-{id}-',
+            autosave_restore_when_empty: false,
+            autosave_retention: '2m',
+            image_advtab: true,
+            importcss_append: true,
+            height: 600,
+            image_caption: true,
+            quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+            noneditable_noneditable_class: 'mceNonEditable',
+            toolbar_mode: 'sliding',
+            contextmenu: 'link image imagetools table',
+            skin: 'oxide',
+            content_css: 'default',
+            content_style: 'body { font-family:Helvetica,Arial,namespace,sans-serif; font-size:14px }',
+
+            // Image Upload Handler
+            images_upload_handler: (blobInfo, progress) => new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', 'upload_handler.php');
+
+                xhr.upload.onprogress = (e) => {
+                    progress(e.loaded / e.total * 100);
+                };
+
+                xhr.onload = () => {
+                    if (xhr.status === 403) {
+                        reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
+                        return;
+                    }
+
+                    if (xhr.status < 200 || xhr.status >= 300) {
+                        reject('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+
+                    const json = JSON.parse(xhr.responseText);
+
+                    if (!json || typeof json.location != 'string') {
+                        reject('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+
+                    resolve(json.location);
+                };
+
+                xhr.onerror = () => {
+                    reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+                };
+
+                const formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+                xhr.send(formData);
+            })
+        });
+    },
+
+    // =====================================================
+    // Event Listeners
+    // =====================================================
     setupEventListeners() {
         // Article form submission
         document.getElementById('articleForm').addEventListener('submit', (e) => {
             e.preventDefault();
             this.saveArticle();
+        });
+
+        // File Input Preview
+        document.getElementById('featuredImageInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            const previewBox = document.getElementById('imagePreviewBox');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewBox.style.backgroundImage = `url('${e.target.result}')`;
+                    previewBox.classList.add('has-image');
+                    previewBox.innerHTML = ''; // Hide icon/text
+                }
+                reader.readAsDataURL(file);
+            }
         });
 
         // Auto-generate slug from title
@@ -192,6 +282,140 @@ const AdminDashboard = {
         });
     },
 
+    // ... (rest of code) ...
+
+    async saveArticle() {
+        const form = document.getElementById('articleForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Sync TinyMCE content to textarea
+        tinymce.triggerSave();
+
+        const formData = new FormData(form);
+
+        const articleId = document.getElementById('articleId').value;
+        formData.append('action', articleId ? 'update' : 'create');
+
+        // Add SEO score
+        const seoScore = this.calculateSEOScore();
+        formData.append('seo_score', seoScore);
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+
+        try {
+            const response = await fetch(this.apiUrl, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                this.showToast('success', articleId ? 'Artikel berhasil diperbarui!' : 'Artikel berhasil ditambahkan!');
+                this.resetArticleForm();
+                this.showSection('articles');
+            } else {
+                this.showToast('danger', result.error || 'Gagal menyimpan artikel.');
+            }
+        } catch (error) {
+            console.error(error);
+            this.showToast('danger', 'Terjadi kesalahan. Coba lagi.');
+        }
+
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="bi bi-check-lg"></i> Simpan Artikel';
+    },
+
+    async editArticle(id) {
+        try {
+            const response = await fetch(`${this.apiUrl}?action=get_article&id=${id}`);
+            const result = await response.json();
+
+            if (result.success) {
+                const article = result.data;
+
+                document.getElementById('articleId').value = article.id;
+                document.getElementById('articleTitle').value = article.title;
+                document.getElementById('articleSlug').value = article.slug;
+                document.getElementById('articleCategory').value = article.category;
+                document.getElementById('articleImage').value = article.image_url;
+
+                // Set Preview for existing image
+                const previewBox = document.getElementById('imagePreviewBox');
+                if (article.image_url) {
+                    previewBox.style.backgroundImage = `url('${article.image_url}')`;
+                    previewBox.classList.add('has-image');
+                    previewBox.innerHTML = '';
+                } else {
+                    // Reset preview default
+                    previewBox.style.backgroundImage = 'none';
+                    previewBox.classList.remove('has-image');
+                    previewBox.innerHTML = '<div class="text-center"><i class="bi bi-cloud-upload fs-2"></i><p class="mb-0 small">Klik untuk upload gambar</p><small class="text-muted">(JPG, PNG, WEBP - Max 5MB)</small></div>';
+                }
+
+                document.getElementById('articleExcerpt').value = article.excerpt || '';
+
+                // Set TinyMCE content
+                if (tinymce.get('articleContent')) {
+                    tinymce.get('articleContent').setContent(article.content);
+                } else {
+                    document.getElementById('articleContent').value = article.content;
+                }
+
+                document.getElementById('articleReadTime').value = article.read_time || '5 menit baca';
+
+                // SEO fields
+                document.getElementById('focusKeyword').value = article.focus_keyword || '';
+                document.getElementById('metaTitle').value = article.meta_title || '';
+                document.getElementById('metaDescription').value = article.meta_description || '';
+
+                // Update character counters
+                document.getElementById('metaTitleCount').textContent = `(${(article.meta_title || '').length}/70)`;
+                document.getElementById('metaDescCount').textContent = `(${(article.meta_description || '').length}/160)`;
+
+                document.getElementById('formTitle').textContent = 'Edit Artikel';
+                this.showSection('add-article');
+
+                // Calculate SEO score for loaded article
+                setTimeout(() => this.calculateSEOScore(), 500); // Slight delay for TinyMCE
+            } else {
+                this.showToast('danger', 'Artikel tidak ditemukan.');
+            }
+        } catch (error) {
+            this.showToast('danger', 'Gagal memuat artikel.');
+        }
+    },
+
+    resetArticleForm() {
+        document.getElementById('articleForm').reset();
+        document.getElementById('articleId').value = '';
+        document.getElementById('formTitle').textContent = 'Tambah Artikel Baru';
+        document.getElementById('metaTitleCount').textContent = '(0/70)';
+        document.getElementById('metaDescCount').textContent = '(0/160)';
+        document.getElementById('wordCount').textContent = '(0 kata)';
+
+        // Reset TinyMCE
+        if (tinymce.get('articleContent')) {
+            tinymce.get('articleContent').setContent('');
+        }
+
+        // Reset Preview
+        const previewBox = document.getElementById('imagePreviewBox');
+        previewBox.style.backgroundImage = 'none';
+        previewBox.classList.remove('has-image');
+        previewBox.innerHTML = '<div class="text-center"><i class="bi bi-cloud-upload fs-2"></i><p class="mb-0 small">Klik untuk upload gambar</p><small class="text-muted">(JPG, PNG, WEBP - Max 5MB)</small></div>';
+
+        // Reset SEO score
+        this.updateSEOScoreUI(0, {
+            keywordTitle: false,
+            metaDesc: false,
+            wordCount: false,
+            keywordContent: false,
+            metaTitle: false
+        });
+    },
+
     // =====================================================
     // SEO Scoring System
     // =====================================================
@@ -210,7 +434,13 @@ const AdminDashboard = {
         const keyword = document.getElementById('focusKeyword').value.toLowerCase().trim();
         const metaTitle = document.getElementById('metaTitle').value;
         const metaDesc = document.getElementById('metaDescription').value;
-        const content = document.getElementById('articleContent').value.toLowerCase();
+
+        let content = '';
+        if (tinymce.get('articleContent')) {
+            content = tinymce.get('articleContent').getContent().toLowerCase();
+        } else {
+            content = document.getElementById('articleContent').value.toLowerCase();
+        }
 
         // Count words in content (strip HTML)
         const plainText = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
