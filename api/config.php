@@ -10,12 +10,18 @@
  * Location: hPanel > Databases > MySQL Databases
  */
 
-// Database credentials - UPDATE THESE!
-define('DB_HOST', 'localhost');           // Usually 'localhost' on Hostinger
-define('DB_NAME', 'u401270881_JNI_Marketing');      // Your database name
-define('DB_USER', 'u401270881_MarketingJamna');    // Your database username
-define('DB_PASS', '6K3e$t9u!3Z');  // Your database password
-define('DB_CHARSET', 'utf8mb4');
+// Database credentials
+// Try to load from environment file (ignored by version control)
+if (file_exists(__DIR__ . '/config.env.php')) {
+    require_once __DIR__ . '/config.env.php';
+} else {
+    // Fallback defaults (Change these or use config.env.php)
+    if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
+    if (!defined('DB_NAME')) define('DB_NAME', 'your_db_name');
+    if (!defined('DB_USER')) define('DB_USER', 'your_db_user');
+    if (!defined('DB_PASS')) define('DB_PASS', 'your_db_password');
+    if (!defined('DB_CHARSET')) define('DB_CHARSET', 'utf8mb4');
+}
 
 /**
  * Get PDO Database Connection

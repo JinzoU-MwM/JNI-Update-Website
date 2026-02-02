@@ -73,7 +73,8 @@ if (isset($_GET['check'])) {
                 'id' => $_SESSION['admin']['id'],
                 'username' => $_SESSION['admin']['username'],
                 'role' => $_SESSION['admin']['role']
-            ]
+            ],
+            'csrf_token' => $_SESSION['csrf_token'] ?? null
         ]);
     } else {
         echo json_encode([
@@ -153,6 +154,9 @@ try {
         'logged_in' => true,
         'login_time' => time()
     ];
+
+    // Generate CSRF Token
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     
     // Update last login timestamp
     $updateSql = "UPDATE users SET last_login = NOW() WHERE id = :id";
@@ -165,6 +169,7 @@ try {
     echo json_encode([
         'success' => true,
         'message' => 'Login berhasil',
+        'csrf_token' => $_SESSION['csrf_token'],
         'redirect' => 'dashboard.html'
     ]);
     

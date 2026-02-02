@@ -16,25 +16,35 @@
  * SECURITY: Delete this file after generating your password!
  */
 
-// =====================================================
-// SET YOUR PASSWORD HERE
-// =====================================================
-$password = 'Berhasil_123';  // Change this to your desired password
+// Include database connection
+require_once __DIR__ . '/../api/config.php';
 
-// =====================================================
-// Generate Hash
-// =====================================================
-$hash = password_hash($password, PASSWORD_DEFAULT);
+// Set password
+$newPassword = 'admin123';
+$hash = password_hash($newPassword, PASSWORD_DEFAULT);
 
-// Output
-echo "=====================================================\n";
-echo "JNI Consultant - Password Hash Generator\n";
-echo "=====================================================\n\n";
-echo "Password: $password\n";
-echo "Hash:     $hash\n\n";
-echo "SQL Update Command:\n";
-echo "UPDATE users SET password = '$hash' WHERE username = 'admin';\n\n";
-echo "=====================================================\n";
-echo "IMPORTANT: Delete this file after use!\n";
-echo "=====================================================\n";
+echo "<h3>Resetting Password...</h3>";
+
+try {
+    $pdo = getDbConnection();
+    
+    // Check if user exists
+    $stmt = $pdo->prepare("SELECT id FROM users WHERE username = 'admin'");
+    $stmt->execute();
+    
+    if ($stmt->fetch()) {
+        $update = $pdo->prepare("UPDATE users SET password = :pass WHERE username = 'admin'");
+        $update->execute([':pass' => $hash]);
+        echo "<div style='color: green; padding: 20px; border: 1px solid green; background: #e0ffe0;'>";
+        echo "✅ Password for user <strong>'admin'</strong> has been reset to: <strong>$newPassword</strong><br>";
+        echo "</div>";
+    } else {
+        echo "<div style='color: red;'>User 'admin' not found!</div>";
+    }
+    
+    echo "<br><br><a href='login.html' style='font-size: 20px;'>Go to Login Page</a>";
+    
+} catch (Exception $e) {
+    echo "<div style='color: red;'>Error: " . $e->getMessage() . "</div>";
+}
 ?>

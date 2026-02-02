@@ -77,7 +77,8 @@ const BlogModule = {
     const blogGrid = document.querySelector('.blog-grid');
     if (!blogGrid) return;  // Not on blog page
 
-    // Show loading state
+    // Show loading state and Clear Container (Fix for Ghost Articles)
+    blogGrid.innerHTML = '';
     blogGrid.innerHTML = '<p class="loading-text">Memuat artikel...</p>';
 
     // Fetch articles from API
@@ -86,7 +87,7 @@ const BlogModule = {
     if (articles.length > 0) {
       this.renderArticleCards(blogGrid, articles);
     } else {
-      blogGrid.innerHTML = '<div class="col-12 text-center py-5"><p class="text-muted fs-5">Belum ada artikel terbaru.</p></div>';
+      blogGrid.innerHTML = '<div class="col-12 text-center py-5"><h3>Belum ada artikel saat ini.</h3></div>';
     }
   },
 
