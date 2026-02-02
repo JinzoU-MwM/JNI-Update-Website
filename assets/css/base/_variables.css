@@ -1,0 +1,50 @@
+/* =====================================================
+   CSS Variables (Design Tokens)
+   ===================================================== */
+
+:root {
+    /* Primary Colors */
+    --primary-deep: #387C44;
+    --primary-accent: #4CAF50;
+    --primary-gradient: linear-gradient(135deg, #387C44 0%, #4CAF50 100%);
+    --primary-gradient-hover: linear-gradient(135deg, #2d6337 0%, #43a047 100%);
+
+    /* Background Colors */
+    --bg-light: #F8F9FA;
+    --bg-white: #FFFFFF;
+    --bg-dark: #387C44;
+
+    /* Text Colors */
+    --text-dark: #2C3E50;
+    --text-navy: #1a2b3c;
+    --text-muted: #6c757d;
+    --text-light: #FFFFFF;
+    --text-green: #387C44;
+
+    /* Font Weights */
+    --font-weight-light: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Shadows */
+    --shadow-soft: 0 10px 40px rgba(56, 124, 68, 0.1);
+    --shadow-hover: 0 20px 50px rgba(56, 124, 68, 0.2);
+    --shadow-navbar: 0 2px 20px rgba(0, 0, 0, 0.08);
+
+    /* Typography */
+    --font-primary: 'Jost', 'Poppins', sans-serif;
+
+    /* Spacing */
+    --section-padding: 100px 0;
+    --container-width: 1200px;
+
+    /* Border Radius */
+    --radius-pill: 50px;
+    --radius-card: 15px;
+    --radius-small: 8px;
+
+    /* Transitions */
+    --transition-smooth: all 0.3s ease;
+    --transition-fast: all 0.2s ease;
+}
