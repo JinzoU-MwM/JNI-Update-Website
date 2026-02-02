@@ -1,9 +1,12 @@
 <?php
 session_start();
-require_once 'auth.php';
 require_once '../api/config.php';
 
 // 1. Authentication Check
+function isLoggedIn() {
+    return isset($_SESSION['admin']) && $_SESSION['admin']['logged_in'] === true;
+}
+
 if (!isLoggedIn()) {
     header('Location: login.html');
     exit;
@@ -135,7 +138,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         logActivity($pdo, 'create', 'testimonial', $pdo->lastInsertId(), $name);
         $message = "Testimonial disimpan!";
     }
+
+    // --- SAVE SERVICE ---
+    elseif ($action === 'save_service') {
+        $id = $_POST['id'] ?? null;
+        $title = trim($_POST['title']);
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
+        $shortDesc = trim($_POST['short_description']);
+        $fullDesc = $_POST['full_description'];
+        $requirements = $_POST['requirements'];
+        $benefits = $_POST['benefits'];
+        $iconSvg = trim($_POST['icon_svg']); // Optional manual SVG input
+        
+        $paramArr = [$title, $slug, $shortDesc, $fullDesc, $requirements, $benefits, $iconSvg];
+        
+        // Handle Image Upload (Optional)
+        $imageUrl = $_POST['existing_image'] ?? '';
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $res = handleFileUpload($_FILES['image'], '../uploads/services/', 'srv');
+            if (isset($res['path'])) $imageUrl = $res['path'];
+        }
+
+        try {
+            if ($id) {
+                // UPDATE
+                $sql = "UPDATE services SET title=?, slug=?, short_description=?, full_description=?, requirements=?, benefits=?, icon_svg=?";
+                if ($imageUrl) { $sql .= ", image_url=?"; $paramArr[] = $imageUrl; }
+                $sql .= ", updated_at=NOW() WHERE id=?";
+                $paramArr[] = $id;
+                
+                $pdo->prepare($sql)->execute($paramArr);
+                logActivity($pdo, 'update', 'service', $id, $title);
+                $message = "Layanan berhasil diperbarui!";
+            } else {
+                // INSERT
+                if ($imageUrl) {
+                    $sql = "INSERT INTO services (title, slug, short_description, full_description, requirements, benefits, icon_svg, image_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                    $paramArr[] = $imageUrl;
+                } else {
+                    $sql = "INSERT INTO services (title, slug, short_description, full_description, requirements, benefits, icon_svg, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+                }
+                $pdo->prepare($sql)->execute($paramArr);
+                logActivity($pdo, 'create', 'service', $pdo->lastInsertId(), $title);
+                $message = "Layanan berhasil ditambahkan!";
+            }
+        } catch (PDOException $e) { $error = "DB Error: " . $e->getMessage(); }
+    }
 }
+
+// --- INIT DATABASE REMOVED PER USER REQUEST ---
 
 // =====================================================
 // GET HANDLERS (DELETE & FETCH)
@@ -143,30 +194,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isset($_GET['delete']) && isset($_GET['type'])) {
     $id = (int)$_GET['delete'];
     $type = $_GET['type'];
-    $table = ($type === 'gallery') ? 'gallery' : (($type === 'testimonial') ? 'testimonials' : 'articles');
-    $pdo->prepare("DELETE FROM $table WHERE id = ?")->execute([$id]);
-    logActivity($pdo, 'delete', $type, $id, "ID: $id");
-    $message = "Item berhasil dihapus.";
+    
+    if ($type === 'message') {
+        // --- DELETE MESSAGES ---
+        $pdo->prepare("DELETE FROM messages WHERE id = ?")->execute([$id]);
+        logActivity($pdo, 'delete', 'message', $id, "Message ID: $id");
+        $message = "Pesan berhasil dihapus.";
+    } else {
+        // --- DELETE OTHER ITEMS ---
+        $table = match ($type) {
+            'gallery' => 'gallery',
+            'testimonial' => 'testimonials',
+            'article' => 'articles',
+            'service' => 'services',
+            default => null
+        };
+
+        if ($table) {
+            $pdo->prepare("DELETE FROM $table WHERE id = ?")->execute([$id]);
+            logActivity($pdo, 'delete', $type, $id, "ID: $id");
+            $message = "Item berhasil dihapus.";
+        }
+    }
 }
 
 // Fetch Data for Views
 $stats = [];
-if ($page === 'dashboard') {
-    $stats['articles'] = $pdo->query("SELECT COUNT(*) FROM articles")->fetchColumn();
-    $stats['gallery'] = $pdo->query("SELECT COUNT(*) FROM gallery")->fetchColumn();
-    $stats['testimonials'] = $pdo->query("SELECT COUNT(*) FROM testimonials")->fetchColumn();
-    $stats['recent'] = $pdo->query("SELECT * FROM activity_log ORDER BY created_at DESC LIMIT 5")->fetchAll();
-}
-$galleryItems = ($page === 'gallery') ? $pdo->query("SELECT * FROM gallery ORDER BY created_at DESC")->fetchAll() : [];
-$testimonials = ($page === 'testimonials') ? $pdo->query("SELECT * FROM testimonials ORDER BY created_at DESC")->fetchAll() : [];
-$articles = ($page === 'list') ? $pdo->query("SELECT * FROM articles ORDER BY created_at DESC")->fetchAll() : [];
+try {
+    if ($page === 'dashboard') {
+        $stats['articles'] = $pdo->query("SELECT COUNT(*) FROM articles")->fetchColumn();
+        $stats['gallery'] = $pdo->query("SELECT COUNT(*) FROM gallery")->fetchColumn();
+        $stats['testimonials'] = $pdo->query("SELECT COUNT(*) FROM testimonials")->fetchColumn();
+        
+        // Safely check for messages table
+        try {
+            $stats['messages'] = $pdo->query("SELECT COUNT(*) FROM messages")->fetchColumn();
+        } catch (PDOException $e) { $stats['messages'] = 0; }
+        
+        $stats['recent'] = $pdo->query("SELECT * FROM activity_log ORDER BY created_at DESC LIMIT 5")->fetchAll();
+    }
+    
+    $galleryItems = ($page === 'gallery') ? $pdo->query("SELECT * FROM gallery ORDER BY created_at DESC")->fetchAll() : [];
+    $testimonials = ($page === 'testimonials') ? $pdo->query("SELECT * FROM testimonials ORDER BY created_at DESC")->fetchAll() : [];
+    $articles = ($page === 'list') ? $pdo->query("SELECT * FROM articles ORDER BY created_at DESC")->fetchAll() : [];
+    $services = ($page === 'services') ? $pdo->query("SELECT * FROM services ORDER BY created_at ASC")->fetchAll() : [];
+    
+    // Safely check for messages table
+    $messages = [];
+    if ($page === 'messages') {
+        try {
+            $messages = $pdo->query("SELECT * FROM messages ORDER BY created_at DESC")->fetchAll();
+        } catch (PDOException $e) { 
+            $error = "Tabel 'messages' belum ada di database. Harap import SQL secara manual."; 
+        }
+    }
 
-// EDIT MODE for Article
+} catch (PDOException $e) {
+    $error = "Database Error: " . $e->getMessage();
+}
+
+// EDIT MODE for Article or Service
 $editArticle = null;
+$editService = null;
+
 if ($page === 'edit' && isset($_GET['id'])) {
     $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ?");
     $stmt->execute([$_GET['id']]);
     $editArticle = $stmt->fetch();
+}
+
+if ($page === 'edit_service' && isset($_GET['id'])) {
+    $stmt = $pdo->prepare("SELECT * FROM services WHERE id = ?");
+    $stmt->execute([$_GET['id']]);
+    $editService = $stmt->fetch();
 }
 ?>
 <!DOCTYPE html>
@@ -186,6 +286,7 @@ if ($page === 'edit' && isset($_GET['id'])) {
         .content { padding: 30px; }
         .card { border: none; shadow: 0 0 15px rgba(0,0,0,0.05); }
         .tox-promotion { display: none !important; }
+        .message-row.unread { background-color: #f0fff4; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -196,9 +297,11 @@ if ($page === 'edit' && isset($_GET['id'])) {
                 <h4 class="mb-4 text-center border-bottom pb-3">JNI Admin</h4>
                 <nav class="nav flex-column">
                     <a href="dashboard.php?page=dashboard" class="<?= $page=='dashboard'?'bg-success':'' ?>"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                    <a href="dashboard.php?page=services" class="<?= $page=='services'?'bg-success':'' ?>"><i class="bi bi-briefcase me-2"></i> Layanan</a>
                     <a href="dashboard.php?page=list" class="<?= $page=='list'?'bg-success':'' ?>"><i class="bi bi-file-text me-2"></i> Artikel</a>
                     <a href="dashboard.php?page=gallery" class="<?= $page=='gallery'?'bg-success':'' ?>"><i class="bi bi-images me-2"></i> Galeri</a>
                     <a href="dashboard.php?page=testimonials" class="<?= $page=='testimonials'?'bg-success':'' ?>"><i class="bi bi-chat-quote me-2"></i> Testimonial</a>
+                    <a href="dashboard.php?page=messages" class="<?= $page=='messages'?'bg-success':'' ?>"><i class="bi bi-envelope me-2"></i> Pesan Masuk</a>
                     <a href="logout.php" class="mt-5 text-danger"><i class="bi bi-box-arrow-left me-2"></i> Keluar</a>
                 </nav>
             </div>
@@ -212,22 +315,28 @@ if ($page === 'edit' && isset($_GET['id'])) {
                 <?php if ($page === 'dashboard'): ?>
                     <h2 class="mb-4">Dashboard Overview</h2>
                     <div class="row g-4 mb-4">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="card p-3 bg-white shadow-sm border-start border-4 border-success">
                                 <h3><?= $stats['articles'] ?></h3>
                                 <p class="text-muted mb-0">Total Artikel</p>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="card p-3 bg-white shadow-sm border-start border-4 border-primary">
                                 <h3><?= $stats['gallery'] ?></h3>
                                 <p class="text-muted mb-0">Total Galeri</p>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="card p-3 bg-white shadow-sm border-start border-4 border-warning">
                                 <h3><?= $stats['testimonials'] ?></h3>
                                 <p class="text-muted mb-0">Total Testimonial</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card p-3 bg-white shadow-sm border-start border-4 border-info">
+                                <h3><?= $stats['messages'] ?></h3>
+                                <p class="text-muted mb-0">Pesan Masuk</p>
                             </div>
                         </div>
                     </div>
@@ -243,8 +352,82 @@ if ($page === 'edit' && isset($_GET['id'])) {
                         </ul>
                     </div>
 
-                <!-- === GALLERY === -->
-                <?php elseif ($page === 'gallery'): ?>
+                <!-- === MESSAGES (INBOX) === -->
+                <?php elseif ($page === 'messages'): ?>
+                    <h3>Pesan Masuk</h3>
+                    <div class="table-responsive bg-white shadow-sm rounded">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Nama</th>
+                                    <th>Kontak</th>
+                                    <th>Source</th>
+                                    <th>Pesan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($messages as $msg): ?>
+                                <tr class="message-row">
+                                    <td class="small text-muted" style="white-space:nowrap;"><?= date('d M Y H:i', strtotime($msg['created_at'])) ?></td>
+                                    <td class="fw-bold"><?= htmlspecialchars($msg['name']) ?></td>
+                                    <td>
+                                        <?php if($msg['phone']): ?>
+                                            <div><i class="bi bi-whatsapp text-success"></i> <?= htmlspecialchars($msg['phone']) ?></div>
+                                        <?php endif; ?>
+                                        <?php if($msg['email']): ?>
+                                            <div class="small text-muted"><i class="bi bi-envelope"></i> <?= htmlspecialchars($msg['email']) ?></div>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <span class="badge <?= $msg['source']=='bubble_chat' ? 'bg-info' : 'bg-secondary' ?>">
+                                            <?= $msg['source']=='bubble_chat' ? 'Chat Widget' : 'Contact Form' ?>
+                                        </span>
+                                    </td>
+                                    <td><?= htmlspecialchars(substr($msg['message'], 0, 40)) ?>...</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#msgModal<?= $msg['id'] ?>"><i class="bi bi-eye"></i></button>
+                                        <a href="dashboard.php?page=messages&delete=<?= $msg['id'] ?>&type=message" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus pesan ini?')"><i class="bi bi-trash"></i></a>
+                                    </td>
+                                </tr>
+
+                                <!-- Message Detail Modal -->
+                                <div class="modal fade" id="msgModal<?= $msg['id'] ?>" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Pesan dari <?= htmlspecialchars($msg['name']) ?></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p><strong>Service Type:</strong> <?= htmlspecialchars($msg['service_type'] ?? '-') ?></p>
+                                                <p><strong>Email:</strong> <?= htmlspecialchars($msg['email'] ?? '-') ?></p>
+                                                <p><strong>Phone:</strong> <?= htmlspecialchars($msg['phone'] ?? '-') ?></p>
+                                                <hr>
+                                                <p class="bg-light p-3 rounded"><?= nl2br(htmlspecialchars($msg['message'])) ?></p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <?php if($msg['phone']): 
+                                                    $cleanPhone = preg_replace('/[^0-9]/', '', $msg['phone']);
+                                                    if (substr($cleanPhone, 0, 1) == '0') $cleanPhone = '62' . substr($cleanPhone, 1);
+                                                ?>
+                                                    <a href="https://wa.me/<?= $cleanPhone ?>?text=Halo <?= urlencode($msg['name']) ?>, terima kasih telah menghubungi JNI Consultant." target="_blank" class="btn btn-success"><i class="bi bi-whatsapp"></i> Reply via WA</a>
+                                                <?php endif; ?>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <?php if(empty($messages)): ?>
+                            <div class="p-4 text-center text-muted">Belum ada pesan masuk.</div>
+                        <?php endif; ?>
+                    </div>
+
+                <!-- === GALLERY === -->                <?php elseif ($page === 'gallery'): ?>
                     <h3>Manajemen Galeri</h3>
                     <div class="card mb-4 p-4 shadow-sm">
                         <form method="POST" enctype="multipart/form-data" class="row align-items-end g-3">

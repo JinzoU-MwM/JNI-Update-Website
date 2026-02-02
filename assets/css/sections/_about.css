@@ -1,0 +1,122 @@
+/* =====================================================
+   About Us Section Styles
+   ===================================================== */
+
+/* 1. Header Refinement */
+/* Already handled in _pages.css modifications */
+
+/* 2. Balanced Content Layout */
+.about-intro {
+    padding: 80px 0;
+    overflow: visible; /* Allow decorative elements to show */
+}
+
+.about-grid {
+    display: flex;
+    align-items: center; /* Vertical Center */
+    gap: 60px; /* Better Spacing */
+    position: relative;
+}
+
+/* Image Styling */
+.about-image {
+    flex: 1; /* Larger width balance */
+    position: relative;
+    z-index: 1;
+}
+
+.about-image img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 2;
+}
+
+/* Decorative Element (Green Patch) */
+.about-image::before {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: -30px;
+    width: 80%;
+    height: 80%;
+    background-color: rgba(56, 124, 68, 0.1); /* Light Green Brand Color */
+    border-radius: 12px;
+    z-index: 1;
+}
+
+.about-image::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    background-image: radial-gradient(var(--primary-green) 2px, transparent 2px);
+    background-size: 15px 15px;
+    opacity: 0.2;
+    z-index: 1;
+}
+
+/* Text Styling */
+.about-content {
+    flex: 1;
+}
+
+.about-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 25px;
+    line-height: 1.2;
+}
+
+.about-content p {
+    font-size: 1.1rem;
+    color: var(--text-medium);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* 3. Typography Cleanup */
+.why-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 30px;
+}
+
+.why-list li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px; /* Increased Spacing */
+    font-size: 1.05rem;
+    color: var(--text-dark);
+}
+
+.why-list .check-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(46, 125, 50, 0.1);
+    color: var(--primary-green);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .about-grid {
+        flex-direction: column;
+        gap: 40px;
+    }
+    .about-image img {
+        height: 350px;
+    }
+    .about-content h2 {
+        font-size: 2rem;
+    }
+}

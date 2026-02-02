@@ -170,7 +170,7 @@ try {
         'success' => true,
         'message' => 'Login berhasil',
         'csrf_token' => $_SESSION['csrf_token'],
-        'redirect' => 'dashboard.html'
+        'redirect' => 'dashboard.php'
     ]);
     
 } catch (PDOException $e) {

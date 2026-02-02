@@ -116,14 +116,18 @@ const I18n = {
         const savedLang = localStorage.getItem('jni_lang') || 'id';
         this.setLanguage(savedLang);
 
-        // Bind event listener to selector
-        const selector = document.querySelector('.lang-selector');
-        if (selector) {
-            selector.addEventListener('click', () => {
+        console.log('I18n Initialized. Current Lang:', savedLang);
+
+        // Robust Event Listener (Delegation)
+        document.body.addEventListener('click', (e) => {
+            const selector = e.target.closest('.lang-selector');
+            if (selector) {
+                e.preventDefault(); // Prevent default if it's a link (just in case)
                 const newLang = this.currentLang === 'id' ? 'en' : 'id';
+                console.log('Language toggled to:', newLang);
                 this.setLanguage(newLang);
-            });
-        }
+            }
+        });
     },
 
     /**

@@ -21,6 +21,7 @@
 @import url('sections/_article.css');
 @import url('sections/_why-us.css');
 @import url('sections/_testimonials.css');
+@import url('sections/_about.css');
 
 /* Utilities */
 @import url('utilities/_responsive.css');

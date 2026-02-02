@@ -19,7 +19,7 @@
   <meta property="og:image" content="assets/images/og-image.jpg">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="assets/images/favicon.png">
+  <link rel="icon" type="image/png" href="assets/images/logo-jabat.png">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -362,19 +362,30 @@
     </div>
   </section>
 
-  <!-- ===== TESTIMONIALS SECTION ===== -->
+  <!-- ===== TESTIMONIALS SECTION (Dual-Row Marquee) ===== -->
   <section class="section testimonials" id="testimonials">
-    <div class="container">
+    <div class="container-fluid" style="padding: 0;">
       <div class="section-header">
         <span class="section-badge" data-i18n="testi_badge">Testimoni</span>
         <h2>Apa Kata <span>Klien Kami</span></h2>
         <p data-i18n="testi_desc">Kepuasan klien adalah prioritas utama kami. Berikut adalah pengalaman mereka bekerja
-          sama dengan JNI
-          Consultant.</p>
+          sama dengan JNI Consultant.</p>
       </div>
 
-      <div class="testimonials-grid" id="testimonials-grid">
-        <!-- Dynamically loaded from API -->
+      <div class="testimonials-marquee-wrapper">
+        <!-- Top Row: Scrolls RIGHT -->
+        <div class="marquee-row">
+          <div class="marquee-track scroll-right" id="marquee-track-1">
+            <!-- JS will populate this -->
+          </div>
+        </div>
+
+        <!-- Bottom Row: Scrolls LEFT -->
+        <div class="marquee-row">
+          <div class="marquee-track scroll-left" id="marquee-track-2">
+            <!-- JS will populate this -->
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -490,6 +501,7 @@
   <script src="assets/js/script.js"></script>
   <script src="assets/js/modules/i18n.js"></script>
   <script src="assets/js/modules/testimonials-loader.js"></script>
+  <script src="assets/js/modules/services-loader.js"></script>
 </body>
 
 </html>
