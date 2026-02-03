@@ -312,8 +312,8 @@ const ArticleDetailModule = {
    ===================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize blog grid (if on blog.html)
-  BlogModule.init();
+  // Initialize blog grid (if on blog.html) - DISABLED: Now handled by PHP Server-Side Rendering
+  // BlogModule.init();
 
   // Initialize article detail (if on article.html)
   ArticleDetailModule.init();

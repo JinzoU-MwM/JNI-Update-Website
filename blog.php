@@ -39,6 +39,162 @@
 
     <title>Artikel & Berita - JNI Consultant</title>
 
+    <!-- Blog Page Specific Styles -->
+    <style>
+        /* =====================================================
+           BLOG PAGE GRID LAYOUT
+           ===================================================== */
+        .blog-page-container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            gap: 30px;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @media (max-width: 991px) {
+            .blog-page-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .blog-page-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .blog-page-container .blog-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .blog-page-container .blog-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Image Container - Fixed Height */
+        .blog-page-container .blog-card-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .blog-page-container .blog-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .blog-page-container .blog-card:hover .blog-card-image img {
+            transform: scale(1.05);
+        }
+
+        .blog-page-container .blog-card-image .category-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: linear-gradient(135deg, #387C44, #4CAF50);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Card Body */
+        .blog-page-container .blog-card-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .blog-page-container .blog-card-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .blog-page-container .blog-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .blog-page-container .blog-card-body h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .blog-page-container .blog-card-body p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .blog-page-container .btn-read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #387C44;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            margin-top: auto;
+            transition: gap 0.3s ease;
+        }
+
+        .blog-page-container .btn-read-more:hover {
+            gap: 12px;
+            color: #2d6339;
+        }
+
+        /* Empty State */
+        .blog-empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            background: #f8fafc;
+            border-radius: 16px;
+        }
+
+        .blog-empty-state h3 {
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        .blog-empty-state p {
+            color: #94a3b8;
+        }
+    </style>
+
     <!-- Blog Structured Data -->
     <script type="application/ld+json">
     {
@@ -86,6 +242,7 @@
     <nav class="navbar nav-inner" id="navbar">
         <div class="container">
             <div class="navbar-brand">
+                <a href="/">
                 <a href="/">
                     <img src="assets/images/logo-jabat.png" alt="Jaminan Nasional Indonesia" class="logo-img">
                     <span class="brand-text">Jaminan Nasional<br>Indonesia</span>
@@ -140,13 +297,63 @@
                 <span class="section-badge">Blog</span>
                 <h2>Informasi Terbaru <span>Seputar Bisnis</span></h2>
             </div>
-            <div class="blog-grid">
-                <!-- Articles will be loaded dynamically via JS -->
+            
+            <?php
+            // Fetch Articles Server-Side
+            // Reusing logic from index.php / api/get_articles.php but inline for simplicity
+            require_once 'api/config.php';
+            require_once 'api/tracker.php';
+            try {
+                $pdo = getDbConnection();
+                $stmt = $pdo->query("SELECT * FROM articles WHERE is_published = 1 ORDER BY created_at DESC");
+                $articles = $stmt->fetchAll();
+            } catch (Exception $e) {
+                // Determine error state
+                $articles = [];
+            }
+            ?>
+
+            <div class="blog-page-container">
+                <?php if (count($articles) > 0): ?>
+                    <?php foreach ($articles as $article): ?>
+                        <article class="blog-card">
+                            <div class="blog-card-image">
+                                <?php $img = !empty($article['image_url']) ? $article['image_url'] : 'assets/images/placeholder.jpg'; ?>
+                                <img src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($article['title']) ?>" loading="lazy">
+                                <span class="category-badge"><?= htmlspecialchars($article['category']) ?></span>
+                            </div>
+                            <div class="blog-card-body">
+                                <div class="blog-card-meta">
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                        <?= date('d M Y', strtotime($article['created_at'])) ?>
+                                    </span>
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                        <?= htmlspecialchars($article['author']) ?>
+                                    </span>
+                                </div>
+                                <h3><?= htmlspecialchars($article['title']) ?></h3>
+                                <p><?= htmlspecialchars($article['excerpt']) ?></p>
+                                <a href="article?slug=<?= htmlspecialchars($article['slug']) ?>" class="btn-read-more">
+                                    Baca Selengkapnya 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                                </a>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="blog-empty-state">
+                        <h3>Belum ada artikel saat ini.</h3>
+                        <p>Silakan kembali lagi nanti untuk membaca artikel terbaru.</p>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
 
-    <footer class="footer">
+    <?php include 'assets/components/footer.html'; ?>
+    <!-- <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
@@ -241,7 +448,7 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer> -->
     <script src="assets/js/modules/article.js"></script>
     <script src="assets/js/script.js"></script>
 </body>

@@ -89,7 +89,7 @@
                             </div>
                             <div class="contact-detail-text">
                                 <h4>Alamat Kantor</h4>
-                                <p>Jl. Sudirman No. 123<br>Jakarta Pusat, 10220</p>
+                                <p>Jl. COndet Raya No 103E <br>Jakarta Timur, Indonesia</p>
                             </div>
                         </div>
                         <div class="contact-detail-item">
@@ -103,7 +103,7 @@
                             </div>
                             <div class="contact-detail-text">
                                 <h4>Email</h4>
-                                <p>info@jniconsultant.com<br>support@jniconsultant.com</p>
+                                <p>jamnasindo.info@gmail.com<br>admin@jamnasindo.id</p>
                             </div>
                         </div>
                         <div class="contact-detail-item">
@@ -115,7 +115,7 @@
                             </div>
                             <div class="contact-detail-text">
                                 <h4>WhatsApp</h4>
-                                <p>+62 812 3456 7890</p>
+                                <p>+62 858 1000 0102</p>
                             </div>
                         </div>
                     </div>
@@ -181,7 +181,8 @@
     </section>
 
 
-    <footer class="footer">
+    <?php include 'assets/components/footer.html'; ?>
+    <!-- <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
@@ -276,8 +277,83 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer> -->
     <script src="assets/js/script.js"></script>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Contact Form Submission Script -->
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" opacity="0.75"/></svg> Mengirim...</span>';
+
+            try {
+                const formData = new FormData(this);
+                formData.append(' _type', formData.get('service'));
+                formData.append('source', 'contact_form');
+
+                const response = await fetch('api/send_message.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    // Success Animation
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Terima Kasih!',
+                        text: 'Tim kami akan segera menghubungi Anda.',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#387C44',
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+
+                    // Reset form
+                    this.reset();
+                } else {
+                    // Error Alert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: result.message || 'Terjadi kesalahan. Silakan coba lagi.',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#dc3545'
+                    });
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan Jaringan',
+                    text: 'Tidak dapat menghubungi server. Periksa koneksi Anda.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#dc3545'
+                });
+            } finally {
+                // Restore button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+    </script>
+
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </body>
 
 </html>

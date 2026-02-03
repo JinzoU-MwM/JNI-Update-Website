@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Galeri dokumentasi proyek dan kegiatan JNI Consultant.">
-    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <meta name="description"
+        content="Tentang JNI Consultant - Profil perusahaan konsultan perizinan dan bisnis terpercaya di Indonesia.">
+    <link rel="icon" type="image/png" href="assets/images/logo-jabat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <title>Galeri - JNI Consultant</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
+    <title>Tentang Kami - JNI Consultant</title>
 </head>
 
 <body>
@@ -26,9 +27,9 @@
                 <ul class="navbar-menu">
                     <li><a href="/">Beranda</a></li>
                     <li><a href="services">Layanan</a></li>
-                    <li><a href="about">Tentang Kami</a></li>
+                    <li><a href="about" class="active">Tentang Kami</a></li>
                     <li><a href="blog">Artikel</a></li>
-                    <li><a href="gallery" class="active">Galeri</a></li>
+                    <li><a href="gallery">Galeri</a></li>
                     <li><a href="contact">Kontak</a></li>
                 </ul>
             </div>
@@ -56,83 +57,147 @@
 
     <section class="page-header">
         <div class="container">
-            <h1>Galeri</h1>
+            <h1>Tentang Kami</h1>
             <div class="breadcrumb">
                 <a href="/">Beranda</a>
                 <span class="breadcrumb-separator">/</span>
-                <span>Galeri</span>
+                <span>Tentang Kami</span>
             </div>
         </div>
     </section>
 
-    <section class="section gallery">
+    <section class="section about-intro">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=550&h=400&fit=crop"
+                        alt="Tim JNI Consultant">
+                </div>
+                <div class="about-content">
+                    <h2>Konsultan Bisnis <span>Terpercaya</span> Sejak 2010</h2>
+                    <p>JNI Consultant adalah perusahaan konsultan yang berfokus pada layanan perizinan usaha dan
+                        konsultasi bisnis. Dengan pengalaman lebih dari 15 tahun, kami telah membantu ratusan perusahaan
+                        dalam mengurus berbagai kebutuhan perizinan.</p>
+                    <p>Kami berkomitmen memberikan layanan profesional dengan proses yang transparan dan hasil yang
+                        memuaskan. Tim kami terdiri dari para ahli yang berpengalaman di bidangnya masing-masing.</p>
+                    <ul class="why-list">
+                        <li><span class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="3">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg></span><span>500+ proyek berhasil diselesaikan</span></li>
+                        <li><span class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="3">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg></span><span>98% tingkat kepuasan klien</span></li>
+                        <li><span class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="3">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg></span><span>Tim profesional bersertifikasi</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section team" id="team">
+        <style>
+            /* Team Refactor Styles (Scoped) */
+            .team-grid-v2 {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 30px;
+                justify-content: center;
+                max-width: 800px; /* Limiting width for just 2 cards to look good */
+                margin: 0 auto;
+            }
+            
+            .team-card-v2 {
+                background: white;
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+                display: flex;
+                flex-direction: column;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                height: 100%;
+            }
+            
+            .team-card-v2:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            }
+            
+            .team-image-container {
+                height: 320px;
+                width: 100%;
+                overflow: hidden;
+                position: relative;
+                background-color: #f1f5f9;
+            }
+            
+            .team-image-container img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center top; 
+                transition: transform 0.5s ease;
+            }
+            
+            .team-card-v2:hover .team-image-container img {
+                transform: scale(1.05);
+            }
+            
+            .team-content {
+                padding: 24px;
+                text-align: center;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            
+            .team-content h3 {
+                font-size: 1.35rem;
+                font-weight: 700;
+                color: #1e293b;
+                margin-bottom: 8px;
+            }
+            
+            .team-role {
+                color: #1e4d2b; /* Theme Green */
+                font-weight: 600;
+                font-size: 1rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        </style>
         <div class="container">
             <div class="section-header">
-                <span class="section-badge">Dokumentasi</span>
-                <h2>Momen <span>Keberhasilan</span> Bersama Klien</h2>
+                <span class="section-badge">Tim Kami</span>
+                <h2>Para Ahli di <span>Balik Kesuksesan</span> Anda</h2>
             </div>
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=250&fit=crop"
-                        alt="Serah Terima Izin PPIU">
-                    <div class="gallery-overlay">
-                        <h4>Serah Terima Izin PPIU</h4><span>PT. Berkah Umrah</span>
+            <div class="team-grid-v2">
+                <!-- Card 1: Bondra Uji Pratama -->
+                <div class="team-card-v2">
+                    <div class="team-image-container">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop" 
+                             alt="Bondra Uji Pratama" loading="lazy">
+                    </div>
+                    <div class="team-content">
+                        <h3>Bondra Uji Pratama</h3>
+                        <span class="team-role">Direktur</span>
                     </div>
                 </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=250&fit=crop"
-                        alt="Kantor JNI Consultant">
-                    <div class="gallery-overlay">
-                        <h4>Kantor JNI Consultant</h4><span>Jakarta Pusat</span>
+                
+                <!-- Card 2: Fandi Rachmat -->
+                <div class="team-card-v2">
+                    <div class="team-image-container">
+                        <img src="public/uploads/photo/Fandi.jpg" 
+                             alt="Fandi Rachmat" loading="lazy">
                     </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=250&fit=crop"
-                        alt="Meeting dengan Klien">
-                    <div class="gallery-overlay">
-                        <h4>Konsultasi Bisnis</h4><span>Meeting Klien</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=250&fit=crop"
-                        alt="Workshop Perpajakan">
-                    <div class="gallery-overlay">
-                        <h4>Workshop Perpajakan</h4><span>Training 2024</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&h=250&fit=crop"
-                        alt="Penandatanganan MoU">
-                    <div class="gallery-overlay">
-                        <h4>Penandatanganan MoU</h4><span>Kerjasama Strategis</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=250&fit=crop"
-                        alt="Seminar Perizinan">
-                    <div class="gallery-overlay">
-                        <h4>Seminar Perizinan</h4><span>Update Regulasi 2024</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&h=250&fit=crop"
-                        alt="Tim JNI">
-                    <div class="gallery-overlay">
-                        <h4>Tim JNI Consultant</h4><span>Team Building</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1553028826-f4804a6dba3b?w=400&h=250&fit=crop"
-                        alt="Sertifikasi SBU">
-                    <div class="gallery-overlay">
-                        <h4>Serah Terima SBU</h4><span>CV. Maju Jaya</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=400&h=250&fit=crop"
-                        alt="Konsultasi Online">
-                    <div class="gallery-overlay">
-                        <h4>Konsultasi Online</h4><span>Virtual Meeting</span>
+                    <div class="team-content">
+                        <h3>Fandi Rachmat</h3>
+                        <span class="team-role">Komisaris</span>
                     </div>
                 </div>
             </div>
@@ -141,13 +206,14 @@
 
     <section class="cta">
         <div class="container">
-            <h2>Jadilah Bagian dari Cerita Sukses Kami</h2>
-            <p>Hubungi kami untuk memulai perjalanan bisnis Anda.</p>
-            <a href="contact.html" class="btn btn-white">Konsultasi Sekarang</a>
+            <h2>Ingin Bergabung dengan Tim Kami?</h2>
+            <p>Kami selalu mencari talenta terbaik untuk bergabung.</p>
+            <a href="contact" class="btn btn-white">Hubungi Kami</a>
         </div>
     </section>
 
-    <footer class="footer">
+    <?php include 'assets/components/footer.html'; ?>
+    <!-- <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
@@ -242,7 +308,7 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer> -->
     <script src="assets/js/script.js"></script>
 </body>
 

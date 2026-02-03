@@ -4,13 +4,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Tentang JNI Consultant - Profil perusahaan konsultan perizinan dan bisnis terpercaya di Indonesia.">
-    <link rel="icon" type="image/png" href="assets/images/logo-jabat.png">
+
+    <!-- SEO Meta Tags (dynamically updated by JS) -->
+    <meta name="description" id="meta-description"
+        content="Artikel dan berita seputar perizinan usaha, bisnis, dan regulasi di Indonesia dari JNI Consultant.">
+    <meta name="keywords" id="meta-keywords"
+        content="perizinan usaha, izin PPIU, izin kontraktor, IATA, bank garansi, konsultan bisnis">
+    <meta name="author" content="JNI Consultant">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" id="canonical-url" href="">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="JNI Consultant">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:title" id="og-title" content="Artikel - JNI Consultant">
+    <meta property="og:description" id="og-description"
+        content="Artikel dan berita seputar perizinan usaha, bisnis, dan regulasi di Indonesia.">
+    <meta property="og:image" id="og-image" content="">
+    <meta property="og:url" id="og-url" content="">
+    <meta property="article:author" content="JNI Consultant">
+    <meta property="article:publisher" content="https://jniconsultant.com">
+    <meta property="article:section" id="og-section" content="Bisnis">
+    <meta property="article:published_time" id="og-published" content="">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitter-title" content="Artikel - JNI Consultant">
+    <meta name="twitter:description" id="twitter-description"
+        content="Artikel dan berita seputar perizinan usaha, bisnis, dan regulasi di Indonesia.">
+    <meta name="twitter:image" id="twitter-image" content="">
+
+    <!-- Favicon & Fonts -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
-    <title>Tentang Kami - JNI Consultant</title>
+
+    <title id="article-page-title">Artikel - JNI Consultant</title>
+
+    <!-- Structured Data / JSON-LD (dynamically updated by JS) -->
+    <script type="application/ld+json" id="article-schema">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "",
+        "description": "",
+        "image": "",
+        "author": {
+            "@type": "Organization",
+            "name": "JNI Consultant"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "JNI Consultant",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://jniconsultant.com/assets/images/logo-jabat.png"
+            }
+        },
+        "datePublished": "",
+        "dateModified": "",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": ""
+        }
+    }
+    </script>
+
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json" id="breadcrumb-schema">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Beranda",
+                "item": "https://jniconsultant.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Artikel",
+                "item": "https://jniconsultant.com/blog.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "",
+                "item": ""
+            }
+        ]
+    }
+    </script>
 </head>
 
 <body>
@@ -18,7 +106,6 @@
     <nav class="navbar nav-inner" id="navbar">
         <div class="container">
             <div class="navbar-brand">
-                <a href="/">
                     <img src="assets/images/logo-jabat.png" alt="Jaminan Nasional Indonesia" class="logo-img">
                     <span class="brand-text">Jaminan Nasional<br>Indonesia</span>
                 </a>
@@ -27,8 +114,8 @@
                 <ul class="navbar-menu">
                     <li><a href="/">Beranda</a></li>
                     <li><a href="services">Layanan</a></li>
-                    <li><a href="about" class="active">Tentang Kami</a></li>
-                    <li><a href="blog">Artikel</a></li>
+                    <li><a href="about">Tentang Kami</a></li>
+                    <li><a href="blog" class="active">Artikel</a></li>
                     <li><a href="gallery">Galeri</a></li>
                     <li><a href="contact">Kontak</a></li>
                 </ul>
@@ -49,128 +136,80 @@
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <a href="contact" class="navbar-cta">Konsultasi</a>
+                <a href="contact.html" class="navbar-cta">Konsultasi</a>
             </div>
             <button class="navbar-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
-    <section class="page-header">
+    <!-- Article Header -->
+    <section class="article-header">
         <div class="container">
-            <h1>Tentang Kami</h1>
-            <div class="breadcrumb">
-                <a href="/">Beranda</a>
-                <span class="breadcrumb-separator">/</span>
-                <span>Tentang Kami</span>
+            <a href="blog" class="back-to-blog">← Kembali ke Artikel</a>
+            <span class="article-category" id="article-category">Kategori</span>
+            <h1 id="article-title">Memuat artikel...</h1>
+            <div class="article-meta-info">
+                <span id="article-date">📅 Tanggal</span>
+                <span id="article-author">👤 Penulis</span>
+                <span id="article-read-time">⏱️ 5 menit baca</span>
             </div>
         </div>
     </section>
 
-    <section class="section about-intro">
+    <!-- Article Content -->
+    <section class="article-content-section">
         <div class="container">
-            <div class="about-grid">
-                <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=550&h=400&fit=crop"
-                        alt="Tim JNI Consultant">
-                </div>
-                <div class="about-content">
-                    <h2>Konsultan Bisnis <span>Terpercaya</span> Sejak 2010</h2>
-                    <p>JNI Consultant adalah perusahaan konsultan yang berfokus pada layanan perizinan usaha dan
-                        konsultasi bisnis. Dengan pengalaman lebih dari 15 tahun, kami telah membantu ratusan perusahaan
-                        dalam mengurus berbagai kebutuhan perizinan.</p>
-                    <p>Kami berkomitmen memberikan layanan profesional dengan proses yang transparan dan hasil yang
-                        memuaskan. Tim kami terdiri dari para ahli yang berpengalaman di bidangnya masing-masing.</p>
-                    <ul class="why-list">
-                        <li><span class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="3">
-                                    <path d="M20 6L9 17l-5-5" />
-                                </svg></span><span>500+ proyek berhasil diselesaikan</span></li>
-                        <li><span class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="3">
-                                    <path d="M20 6L9 17l-5-5" />
-                                </svg></span><span>98% tingkat kepuasan klien</span></li>
-                        <li><span class="check-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="3">
-                                    <path d="M20 6L9 17l-5-5" />
-                                </svg></span><span>Tim profesional bersertifikasi</span></li>
-                    </ul>
-                </div>
+            <div class="article-layout">
+                <!-- Main Content -->
+                <article class="article-main">
+                    <div class="article-featured-image">
+                        <img id="article-image" src="" alt="Article Image">
+                    </div>
+                    <div class="article-body" id="article-body">
+                        <!-- Content will be injected by JavaScript -->
+                        <p>Memuat konten artikel...</p>
+                    </div>
+
+                    <!-- Share Buttons -->
+                    <div class="article-share">
+                        <span>Bagikan:</span>
+                        <a href="#" class="share-btn share-whatsapp" id="share-whatsapp">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                            </svg>
+                            WhatsApp
+                        </a>
+                        <a href="#" class="share-btn share-linkedin" id="share-linkedin">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                            LinkedIn
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Sidebar -->
+                <aside class="article-sidebar">
+                    <div class="sidebar-widget">
+                        <h4>Artikel Terkait</h4>
+                        <div class="related-articles" id="related-articles">
+                            <!-- Related articles will be injected by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="sidebar-widget cta-widget">
+                        <h4>Butuh Bantuan?</h4>
+                        <p>Tim kami siap membantu kebutuhan perizinan bisnis Anda.</p>
+                        <a href="contact.html" class="btn btn-primary">Konsultasi Gratis</a>
+                    </div>
+                </aside>
             </div>
         </div>
     </section>
 
-    <section class="section team">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Tim Kami</span>
-                <h2>Para Ahli di <span>Balik Kesuksesan</span> Anda</h2>
-            </div>
-            <div class="team-grid">
-                <div class="team-card">
-                    <div class="team-image">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=280&fit=crop"
-                            alt="Direktur Utama">
-                        <div class="team-social"><a href="#"><svg width="16" height="16" viewBox="0 0 24 24"
-                                    fill="currentColor">
-                                    <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z" />
-                                </svg></a></div>
-                    </div>
-                    <div class="team-info">
-                        <h3>Ahmad Wijaya</h3><span>Direktur Utama</span>
-                    </div>
-                </div>
-                <div class="team-card">
-                    <div class="team-image">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=280&fit=crop"
-                            alt="Direktur Operasional">
-                        <div class="team-social"><a href="#"><svg width="16" height="16" viewBox="0 0 24 24"
-                                    fill="currentColor">
-                                    <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z" />
-                                </svg></a></div>
-                    </div>
-                    <div class="team-info">
-                        <h3>Sari Putri</h3><span>Direktur Operasional</span>
-                    </div>
-                </div>
-                <div class="team-card">
-                    <div class="team-image">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=280&fit=crop"
-                            alt="Legal Consultant">
-                        <div class="team-social"><a href="#"><svg width="16" height="16" viewBox="0 0 24 24"
-                                    fill="currentColor">
-                                    <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z" />
-                                </svg></a></div>
-                    </div>
-                    <div class="team-info">
-                        <h3>Budi Santoso</h3><span>Legal Consultant</span>
-                    </div>
-                </div>
-                <div class="team-card">
-                    <div class="team-image">
-                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=280&fit=crop"
-                            alt="Tax Consultant">
-                        <div class="team-social"><a href="#"><svg width="16" height="16" viewBox="0 0 24 24"
-                                    fill="currentColor">
-                                    <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z" />
-                                </svg></a></div>
-                    </div>
-                    <div class="team-info">
-                        <h3>Dewi Lestari</h3><span>Tax Consultant</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="cta">
-        <div class="container">
-            <h2>Ingin Bergabung dengan Tim Kami?</h2>
-            <p>Kami selalu mencari talenta terbaik untuk bergabung.</p>
-            <a href="contact" class="btn btn-white">Hubungi Kami</a>
-        </div>
-    </section>
-
-    <footer class="footer">
+    <?php include 'assets/components/footer.html'; ?>
+    <!-- <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
@@ -265,8 +304,10 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer> -->
+
     <script src="assets/js/script.js"></script>
+    <script src="assets/js/modules/article.js"></script>
 </body>
 
 </html>

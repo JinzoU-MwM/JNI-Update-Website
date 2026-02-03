@@ -144,7 +144,7 @@
             </form>
 
             <div class="back-link">
-                <a href="../index.html"><i class="bi bi-arrow-left"></i> Kembali ke Website</a>
+                <a href="../"><i class="bi bi-arrow-left"></i> Kembali ke Website</a>
             </div>
         </div>
     </div>
@@ -181,7 +181,7 @@
             try {
                 const formData = new FormData(this);
 
-                const response = await fetch('auth.php', {
+                const response = await fetch('auth', {
                     method: 'POST',
                     body: formData
                 });

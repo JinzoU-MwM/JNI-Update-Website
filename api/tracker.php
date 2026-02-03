@@ -1,151 +1,52 @@
 <?php
 /**
- * =====================================================
- * JNI Consultant - Visitor Tracker API
- * =====================================================
- * 
- * Lightweight tracker for logging page visits
- * Place tracking code in public pages
- * 
- * Endpoint: POST /api/tracker.php
+ * Visitor Tracking Script
+ * Include this file in your public pages (index.php, etc.)
  */
-
-header('Content-Type: application/json; charset=utf-8');
-$allowedOrigins = ['https://www.jamnasindo.id', 'http://localhost'];
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if (in_array($origin, $allowedOrigins)) {
-    header("Access-Control-Allow-Origin: $origin");
-}
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
-// Handle preflight OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
-
-// Only accept POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
-    exit;
-}
-
-// Include database configuration
 require_once __DIR__ . '/config.php';
 
-/**
- * Get real IP address (handles proxies)
- */
-function getRealIpAddress() {
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-        return $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        return trim($ips[0]);
-    } else {
-        return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    }
+// Avoid tracking admin pages or API calls if accidentally included
+if (strpos($_SERVER['REQUEST_URI'], '/admin/') !== false || strpos($_SERVER['REQUEST_URI'], '/api/') !== false) {
+    return;
 }
-
-/**
- * Detect device type from user agent
- */
-function detectDevice($userAgent) {
-    $userAgent = strtolower($userAgent);
-    
-    if (preg_match('/(tablet|ipad|playbook|silk)|(android(?!.*mobile))/i', $userAgent)) {
-        return 'tablet';
-    }
-    if (preg_match('/(mobile|iphone|ipod|android.*mobile|blackberry|opera mini|iemobile)/i', $userAgent)) {
-        return 'mobile';
-    }
-    return 'desktop';
-}
-
-/**
- * Detect browser from user agent
- */
-function detectBrowser($userAgent) {
-    if (strpos($userAgent, 'Edg') !== false) return 'Edge';
-    if (strpos($userAgent, 'Chrome') !== false) return 'Chrome';
-    if (strpos($userAgent, 'Safari') !== false) return 'Safari';
-    if (strpos($userAgent, 'Firefox') !== false) return 'Firefox';
-    if (strpos($userAgent, 'Opera') !== false || strpos($userAgent, 'OPR') !== false) return 'Opera';
-    if (strpos($userAgent, 'MSIE') !== false || strpos($userAgent, 'Trident') !== false) return 'IE';
-    return 'Other';
-}
-
-// Get input data
-$input = json_decode(file_get_contents('php://input'), true);
-
-// Fallback to POST data
-if (empty($input)) {
-    $input = $_POST;
-}
-
-// Get page data
-$pageUrl = $input['url'] ?? $input['page_url'] ?? '';
-$pageTitle = $input['title'] ?? $input['page_title'] ?? '';
-$referrer = $input['referrer'] ?? $_SERVER['HTTP_REFERER'] ?? '';
-
-// Validate URL
-if (empty($pageUrl)) {
-    echo json_encode(['success' => false, 'error' => 'URL is required']);
-    exit;
-}
-
-// Get visitor info
-$ipAddress = getRealIpAddress();
-$userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-$deviceType = detectDevice($userAgent);
-$browser = detectBrowser($userAgent);
-$sessionId = session_id() ?: md5($ipAddress . date('Y-m-d'));
-
-// Sanitize inputs
-$pageUrl = filter_var($pageUrl, FILTER_SANITIZE_URL);
-$pageTitle = htmlspecialchars(substr($pageTitle, 0, 255), ENT_QUOTES, 'UTF-8');
-$referrer = filter_var($referrer, FILTER_SANITIZE_URL);
 
 try {
     $pdo = getDbConnection();
     
-    // Rate limiting: Check if same IP visited same page in last 30 seconds
-    $checkSql = "SELECT COUNT(*) FROM visitor_logs 
-                 WHERE ip_address = :ip AND page_url = :url 
-                 AND access_time > DATE_SUB(NOW(), INTERVAL 30 SECOND)";
-    $checkStmt = $pdo->prepare($checkSql);
-    $checkStmt->execute([':ip' => $ipAddress, ':url' => $pageUrl]);
+    // Get visitor data
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $url = $_SERVER['REQUEST_URI'];
+    // Clean URL query params for better aggregation
+    $urlPath = parse_url($url, PHP_URL_PATH);
     
-    if ($checkStmt->fetchColumn() > 0) {
-        // Skip duplicate within 30 seconds
-        echo json_encode(['success' => true, 'message' => 'Skipped duplicate']);
-        exit;
+    $referrer = $_SERVER['HTTP_REFERER'] ?? '';
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    
+    // Simple device detection
+    $deviceType = 'desktop';
+    if (preg_match('/(tablet|ipad|playbook)|(android(?!.*(mobi|opera mini)))/i', $userAgent)) {
+        $deviceType = 'tablet';
+    } elseif (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|iemobile)/i', $userAgent)) {
+        $deviceType = 'mobile';
     }
     
-    // Insert visitor log
-    $sql = "INSERT INTO visitor_logs 
-            (page_url, page_title, ip_address, user_agent, referrer, device_type, browser, session_id) 
-            VALUES 
-            (:url, :title, :ip, :ua, :ref, :device, :browser, :session)";
+    // Simple browser detection
+    $browser = 'Other';
+    if (strpos($userAgent, 'Firefox') !== false) $browser = 'Firefox';
+    elseif (strpos($userAgent, 'Chrome') !== false) $browser = 'Chrome';
+    elseif (strpos($userAgent, 'Safari') !== false) $browser = 'Safari';
+    elseif (strpos($userAgent, 'Edge') !== false) $browser = 'Edge';
+    elseif (strpos($userAgent, 'MSIE') !== false || strpos($userAgent, 'Trident') !== false) $browser = 'IE';
     
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ':url' => $pageUrl,
-        ':title' => $pageTitle,
-        ':ip' => $ipAddress,
-        ':ua' => substr($userAgent, 0, 500),
-        ':ref' => substr($referrer, 0, 500),
-        ':device' => $deviceType,
-        ':browser' => $browser,
-        ':session' => $sessionId
-    ]);
+    // Page Title (attempt to get from output buffer or define manually)
+    // For now, simpler to just rely on URL or let the page define $pageTitle
+    $title = $pageTitle ?? $urlPath;
     
-    echo json_encode(['success' => true, 'message' => 'Tracked']);
+    // Insert log
+    $stmt = $pdo->prepare("INSERT INTO visitor_logs (ip_address, page_url, page_title, referrer, user_agent, device_type, browser, access_time) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+    $stmt->execute([$ip, $urlPath, $title, $referrer, $userAgent, $deviceType, $browser]);
     
-} catch (PDOException $e) {
-    error_log("Tracker Error: " . $e->getMessage());
-    echo json_encode(['success' => false, 'error' => 'Database error']);
+} catch (Exception $e) {
+    // Silent fail to not break the site
 }
 ?>

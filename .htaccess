@@ -1,20 +1,18 @@
-Options -MultiViews
-RewriteEngine On
-
-# 1. External Redirect: Remove .html extension (Visible to user)
-# Only redirect if the actual request (THE_REQUEST) contains .html
-# This prevents an infinite loop with the internal rewrite below.
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.html(\s|\?) [NC]
-RewriteRule ^ /%1 [R=301,L]
-
-# 2. Redirect /index to /
-RewriteCond %{THE_REQUEST} \s/+index(\s|\?) [NC]
-RewriteRule ^ / [R=301,L]
-
-# 3. Internal Rewrite: Map /page to page.html (Hidden from user)
-# If the request is NOT a directory
-RewriteCond %{REQUEST_FILENAME} !-d
-# And the corresponding .html file EXISTS
-RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-# Then serve the .html file
-RewriteRule ^(.+?)/?$ $1.html [L]
+# Minimal .htaccess for clean URLs
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # If file exists directly, serve it (CRITICAL for API files)
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+    
+    # If directory exists, serve it
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # Only rewrite to .php for NON-API URLs
+    RewriteCond %{REQUEST_URI} !^/api/
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ $1.php [L]
+</IfModule>

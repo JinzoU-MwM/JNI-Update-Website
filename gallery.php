@@ -1,16 +1,26 @@
+<?php
+require_once 'api/config.php';
+
+try {
+    $pdo = getDbConnection();
+    $stmt = $pdo->query("SELECT * FROM gallery ORDER BY created_at DESC");
+    $gallery = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $gallery = [];
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Layanan Konsultan JNI - Izin PPIU, PIHK, Kontraktor, VISA, Akreditasi IATA, Bank Garansi, dan Perpajakan.">
-    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <meta name="description" content="Galeri dokumentasi proyek dan kegiatan JNI Consultant.">
+    <link rel="icon" type="image/png" href="assets/images/logo-jabat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
-    <title>Layanan Kami - JNI Consultant</title>
+    <title>Galeri - JNI Consultant</title>
 </head>
 
 <body>
@@ -26,10 +36,10 @@
             <div class="navbar-center">
                 <ul class="navbar-menu">
                     <li><a href="/">Beranda</a></li>
-                    <li><a href="services" class="active">Layanan</a></li>
+                    <li><a href="services">Layanan</a></li>
                     <li><a href="about">Tentang Kami</a></li>
                     <li><a href="blog">Artikel</a></li>
-                    <li><a href="gallery">Galeri</a></li>
+                    <li><a href="gallery" class="active">Galeri</a></li>
                     <li><a href="contact">Kontak</a></li>
                 </ul>
             </div>
@@ -57,146 +67,55 @@
 
     <section class="page-header">
         <div class="container">
-            <h1>Layanan Kami</h1>
+            <h1>Galeri</h1>
             <div class="breadcrumb">
                 <a href="/">Beranda</a>
                 <span class="breadcrumb-separator">/</span>
-                <span>Layanan</span>
+                <span>Galeri</span>
             </div>
         </div>
     </section>
 
-    <section class="section services-page">
+    <section class="section gallery">
         <div class="container">
             <div class="section-header">
-                <span class="section-badge">Layanan Lengkap</span>
-                <h2>Solusi Profesional untuk <span>Kebutuhan Bisnis</span></h2>
+                <span class="section-badge">Dokumentasi</span>
+                <h2>Momen <span>Keberhasilan</span> Bersama Klien</h2>
             </div>
-
-            <!-- Category Filter Tabs -->
-            <div class="services-tabs">
-                <button class="tab-btn active" data-category="legal">Legalitas & Perizinan</button>
-                <button class="tab-btn" data-category="finance">Keuangan & Administrasi</button>
-            </div>
-
-            <!-- Services Grid -->
-            <div class="services-grid">
-                <!-- CATEGORY: Legalitas & Perizinan -->
-                <div class="service-card" data-category="legal">
-                    <div class="service-icon-wrap">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M3 21h18M5 21V7l8-4v18M13 21V3l8 4v14" />
-                        </svg>
-                    </div>
-                    <h3>Izin PPIU & PIHK</h3>
-                    <p>Pengurusan izin Penyelenggara Perjalanan Ibadah Umrah dan Haji Khusus dengan proses cepat dan
-                        legal.</p>
-                    <a href="contact.html" class="btn-card">Konsultasi</a>
+            
+            <?php if (empty($gallery)): ?>
+                <!-- Empty State -->
+                <div class="text-center py-5">
+                    <h3 class="text-muted">Belum ada dokumentasi kegiatan saat ini.</h3>
                 </div>
-
-                <div class="service-card" data-category="legal">
-                    <div class="service-icon-wrap">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M2 20h20M4 20V10l8-6 8 6v10M10 20v-6h4v6" />
-                        </svg>
+            <?php else: ?>
+                <!-- Gallery Grid -->
+                <div class="gallery-grid">
+                    <?php foreach ($gallery as $item): ?>
+                    <div class="gallery-item">
+                        <img src="<?= htmlspecialchars($item['image_url']) ?>" alt="<?= htmlspecialchars($item['title']) ?>">
+                        <div class="gallery-overlay">
+                            <h4><?= htmlspecialchars($item['title']) ?></h4>
+                            <span><?= date('d M Y', strtotime($item['created_at'])) ?></span>
+                        </div>
                     </div>
-                    <h3>Izin Kontraktor</h3>
-                    <p>Pengurusan SBU, SIUJK, NIB Konstruksi, dan berbagai izin kontraktor sesuai standar LPJK.</p>
-                    <a href="contact.html" class="btn-card">Konsultasi</a>
+                    <?php endforeach; ?>
                 </div>
-
-                <div class="service-card" data-category="legal">
-                    <div class="service-icon-wrap">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <rect x="2" y="5" width="20" height="14" rx="2" />
-                            <path d="M2 10h20" />
-                        </svg>
-                    </div>
-                    <h3>Izin VISA</h3>
-                    <p>Layanan pengurusan visa untuk bisnis, wisata, kunjungan kerja, dan studi ke berbagai negara.</p>
-                    <a href="contact.html" class="btn-card">Konsultasi</a>
-                </div>
-
-                <div class="service-card" data-category="legal">
-                    <div class="service-icon-wrap">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-                        </svg>
-                    </div>
-                    <h3>Akreditasi IATA</h3>
-                    <p>Pendampingan lengkap untuk mendapatkan akreditasi IATA bagi agen perjalanan wisata.</p>
-                    <a href="contact.html" class="btn-card">Konsultasi</a>
-                </div>
-
-                <!-- CATEGORY: Keuangan & Administrasi -->
-                <div class="service-card" data-category="finance">
-                    <div class="service-icon-wrap">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <rect x="3" y="8" width="18" height="12" rx="2" />
-                            <path d="M7 8V6a5 5 0 0110 0v2" />
-                        </svg>
-                    </div>
-                    <h3>Bank Garansi</h3>
-                    <p>Jaminan bank garansi untuk tender, jaminan pelaksanaan, uang muka, dan pemeliharaan proyek.</p>
-                    <a href="contact.html" class="btn-card">Konsultasi</a>
-                </div>
-
-                <div class="service-card" data-category="finance">
-                    <div class="service-icon-wrap">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                            <path d="M14 2v6h6M8 13h8M8 17h8" />
-                        </svg>
-                    </div>
-                    <h3>Laporan Keuangan</h3>
-                    <p>Penyusunan laporan keuangan sesuai standar akuntansi untuk audit dan pelaporan pajak.</p>
-                    <a href="contact.html" class="btn-card">Konsultasi</a>
-                </div>
-
-                <div class="service-card" data-category="finance">
-                    <div class="service-icon-wrap">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
-                        </svg>
-                    </div>
-                    <h3>Perpajakan</h3>
-                    <p>Konsultasi pajak, pelaporan SPT, perhitungan PPh/PPN, dan pendampingan pemeriksaan pajak.</p>
-                    <a href="contact.html" class="btn-card">Konsultasi</a>
-                </div>
-
-                <div class="service-card" data-category="finance">
-                    <div class="service-icon-wrap">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M9 7h6M9 11h6M9 15h4" />
-                            <rect x="4" y="3" width="16" height="18" rx="2" />
-                        </svg>
-                    </div>
-                    <h3>Administrasi Bisnis</h3>
-                    <p>Pengurusan dokumen legalitas perusahaan, NPWP, NIB, dan kelengkapan administrasi bisnis lainnya.
-                    </p>
-                    <a href="contact.html" class="btn-card">Konsultasi</a>
-                </div>
-            </div>
+            <?php endif; ?>
+            
         </div>
     </section>
 
     <section class="cta">
         <div class="container">
-            <h2>Butuh Bantuan Layanan Khusus?</h2>
-            <p>Hubungi kami untuk konsultasi gratis.</p>
-            <a href="contact.html" class="btn btn-white">Hubungi Kami</a>
+            <h2>Jadilah Bagian dari Cerita Sukses Kami</h2>
+            <p>Hubungi kami untuk memulai perjalanan bisnis Anda.</p>
+            <a href="contact" class="btn btn-white">Konsultasi Sekarang</a>
         </div>
     </section>
 
-    <footer class="footer">
+    <?php include 'assets/components/footer.html'; ?>
+    <!-- <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
@@ -291,9 +210,9 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer> -->
+    <script src="assets/js/modules/i18n.js"></script>
     <script src="assets/js/script.js"></script>
-    <script src="assets/js/modules/services-filter.js"></script>
 </body>
 
 </html>
