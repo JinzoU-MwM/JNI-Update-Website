@@ -1,6 +1,6 @@
 <?php
 /**
- * JNI Consultant - Database Connection Tester
+ * Jamnasindo - Database Connection Tester
  * Upload this file to your public_html/api/ folder and visit it in your browser.
  * e.g., https://yourdomain.com/api/db_test.php
  */

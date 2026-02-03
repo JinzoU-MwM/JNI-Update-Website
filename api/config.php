@@ -1,7 +1,7 @@
 <?php
 /**
  * =====================================================
- * JNI Consultant - Database Configuration
+ * Jamnasindo - Database Configuration
  * =====================================================
  * 
  * IMPORTANT: Update these values with your Hostinger 

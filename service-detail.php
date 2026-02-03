@@ -20,7 +20,7 @@ if (!$service) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($service['title']) ?> - JNI Consultant</title>
+    <title><?= htmlspecialchars($service['title']) ?> - Jamnasindo </title>
     <meta name="description" content="<?= htmlspecialchars($service['short_description']) ?>">
     <link rel="icon" type="image/png" href="assets/images/logo-jabat.png">
     

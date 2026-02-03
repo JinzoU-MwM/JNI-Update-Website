@@ -574,7 +574,7 @@ if ($page === 'edit_service' && isset($_GET['id'])) {
                                                     $cleanPhone = preg_replace('/[^0-9]/', '', $msg['phone']);
                                                     if (substr($cleanPhone, 0, 1) == '0') $cleanPhone = '62' . substr($cleanPhone, 1);
                                                 ?>
-                                                    <a href="https://wa.me/<?= $cleanPhone ?>?text=Halo <?= urlencode($msg['name']) ?>, terima kasih telah menghubungi JNI Consultant." target="_blank" class="btn btn-success"><i class="bi bi-whatsapp"></i> Reply via WA</a>
+                                                    <a href="https://wa.me/<?= $cleanPhone ?>?text=Halo <?= urlencode($msg['name']) ?>, terima kasih telah menghubungi Jamnasindo." target="_blank" class="btn btn-success"><i class="bi bi-whatsapp"></i> Reply via WA</a>
                                                 <?php endif; ?>
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                             </div>

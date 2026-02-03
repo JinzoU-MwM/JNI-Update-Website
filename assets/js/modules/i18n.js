@@ -68,7 +68,7 @@ const I18n = {
         // Why Us Section
         "why_badge": { "id": "Mengapa Kami", "en": "Why Choose Us" },
         "why_title_1": { "id": "Alasan Memilih ", "en": "Reasons to Choose " },
-        "why_title_highlight": { "id": "JNI Consultant", "en": "JNI Consultant" },
+        "why_title_highlight": { "id": "Jamnasindo", "en": "Jamnasindo" },
         "why_desc": { "id": "Dengan pengalaman lebih dari 15 tahun, kami telah membantu ratusan perusahaan dalam mengurus perizinan dan kebutuhan bisnis mereka.", "en": "With over 15 years of experience, we have helped hundreds of companies manage their licensing and business needs." },
 
         "why_team_title": { "id": "Tim Profesional dan ", "en": "Professional Team & " },
@@ -91,7 +91,7 @@ const I18n = {
         "testi_badge": { "id": "Testimoni", "en": "Testimonials" },
         "testi_title_1": { "id": "Apa Kata ", "en": "What Our " },
         "testi_title_highlight": { "id": "Klien Kami", "en": "Clients Say" },
-        "testi_desc": { "id": "Kepuasan klien adalah prioritas utama kami. Berikut adalah pengalaman mereka bekerja sama dengan JNI Consultant.", "en": "Client satisfaction is our top priority. Here are their experiences working with JNI Consultant." },
+        "testi_desc": { "id": "Kepuasan klien adalah prioritas utama kami. Berikut adalah pengalaman mereka bekerja sama dengan Jamnasindo.", "en": "Client satisfaction is our top priority. Here are their experiences working with Jamnasindo." },
 
         // CTA
         "cta_title": { "id": "Siap Memulai Konsultasi?", "en": "Ready to Start Consulting?" },

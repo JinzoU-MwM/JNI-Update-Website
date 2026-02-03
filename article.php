@@ -7,30 +7,30 @@
 
     <!-- SEO Meta Tags (dynamically updated by JS) -->
     <meta name="description" id="meta-description"
-        content="Artikel dan berita seputar perizinan usaha, bisnis, dan regulasi di Indonesia dari JNI Consultant.">
+        content="Artikel dan berita seputar perizinan usaha, bisnis, dan regulasi di Indonesia dari Jamnasindo.">
     <meta name="keywords" id="meta-keywords"
         content="perizinan usaha, izin PPIU, izin kontraktor, IATA, bank garansi, konsultan bisnis">
-    <meta name="author" content="JNI Consultant">
+    <meta name="author" content="Jamnasindo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" id="canonical-url" href="">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
-    <meta property="og:site_name" content="JNI Consultant">
+    <meta property="og:site_name" content="Jamnasindo">
     <meta property="og:locale" content="id_ID">
-    <meta property="og:title" id="og-title" content="Artikel - JNI Consultant">
+    <meta property="og:title" id="og-title" content="Artikel - Jamnasindo">
     <meta property="og:description" id="og-description"
         content="Artikel dan berita seputar perizinan usaha, bisnis, dan regulasi di Indonesia.">
     <meta property="og:image" id="og-image" content="">
     <meta property="og:url" id="og-url" content="">
-    <meta property="article:author" content="JNI Consultant">
+    <meta property="article:author" content="Jamnasindo">
     <meta property="article:publisher" content="https://jniconsultant.com">
     <meta property="article:section" id="og-section" content="Bisnis">
     <meta property="article:published_time" id="og-published" content="">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" id="twitter-title" content="Artikel - JNI Consultant">
+    <meta name="twitter:title" id="twitter-title" content="Artikel - Jamnasindo">
     <meta name="twitter:description" id="twitter-description"
         content="Artikel dan berita seputar perizinan usaha, bisnis, dan regulasi di Indonesia.">
     <meta name="twitter:image" id="twitter-image" content="">
@@ -41,7 +41,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
 
-    <title id="article-page-title">Artikel - JNI Consultant</title>
+    <title id="article-page-title">Artikel - Jamnasindo</title>
 
     <!-- Structured Data / JSON-LD (dynamically updated by JS) -->
     <script type="application/ld+json" id="article-schema">
@@ -53,11 +53,11 @@
         "image": "",
         "author": {
             "@type": "Organization",
-            "name": "JNI Consultant"
+            "name": "Jamnasindo"
         },
         "publisher": {
             "@type": "Organization",
-            "name": "JNI Consultant",
+            "name": "Jamnasindo",
             "logo": {
                 "@type": "ImageObject",
                 "url": "https://jniconsultant.com/assets/images/logo-jabat.png"

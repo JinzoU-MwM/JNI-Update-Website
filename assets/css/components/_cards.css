@@ -277,3 +277,97 @@
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
 }
+
+/* Team Card V2 (Vertical Layout for About Us) */
+.team-card-v2 {
+    background: var(--bg-white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: var(--transition-smooth);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.team-card-v2:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(56, 124, 68, 0.15);
+}
+
+.team-image-container {
+    width: 100%;
+    aspect-ratio: 3/4;
+    /* Optimized Portrait Ratio */
+    overflow: hidden;
+    position: relative;
+    background: #f0f2f5;
+}
+
+.team-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.6s ease;
+}
+
+.team-card-v2:hover .team-image-container img {
+    transform: scale(1.08);
+}
+
+.team-content {
+    padding: 25px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.team-content h4 {
+    color: var(--text-dark);
+    font-size: 1.25rem;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.team-content span {
+    color: var(--primary-green);
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.team-content p {
+    font-size: 0.9rem;
+    color: var(--text-medium);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.team-social {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.team-social a {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(56, 124, 68, 0.1);
+    color: var(--primary-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.team-social a:hover {
+    background: var(--primary-green);
+    color: #fff;
+    transform: translateY(-3px);
+}

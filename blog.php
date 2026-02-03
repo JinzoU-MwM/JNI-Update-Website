@@ -7,18 +7,18 @@
 
     <!-- SEO Meta Tags -->
     <meta name="description"
-        content="Artikel dan berita terbaru seputar perizinan usaha, bisnis, dan regulasi di Indonesia dari JNI Consultant. Tips, panduan, dan informasi terkini.">
+        content="Artikel dan berita terbaru seputar perizinan usaha, bisnis, dan regulasi di Indonesia dari Jamnasindo. Tips, panduan, dan informasi terkini.">
     <meta name="keywords"
         content="artikel perizinan, berita bisnis, izin PPIU, izin kontraktor, IATA, bank garansi, konsultan bisnis, tips usaha">
-    <meta name="author" content="JNI Consultant">
+    <meta name="author" content="Jamnasindo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://jniconsultant.com/blog.html">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="JNI Consultant">
+    <meta property="og:site_name" content="Jamnasindo">
     <meta property="og:locale" content="id_ID">
-    <meta property="og:title" content="Artikel & Berita Bisnis - JNI Consultant">
+    <meta property="og:title" content="Artikel & Berita Bisnis - Jamnasindo">
     <meta property="og:description"
         content="Artikel dan berita terbaru seputar perizinan usaha, bisnis, dan regulasi di Indonesia.">
     <meta property="og:image" content="https://jniconsultant.com/assets/images/og-blog.jpg">
@@ -26,7 +26,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Artikel & Berita Bisnis - JNI Consultant">
+    <meta name="twitter:title" content="Artikel & Berita Bisnis - Jamnasindo">
     <meta name="twitter:description"
         content="Artikel dan berita terbaru seputar perizinan usaha, bisnis, dan regulasi di Indonesia.">
     <meta name="twitter:image" content="https://jniconsultant.com/assets/images/og-blog.jpg">
@@ -37,7 +37,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
 
-    <title>Artikel & Berita - JNI Consultant</title>
+    <title>Artikel & Berita - Jamnasindo</title>
 
     <!-- Blog Page Specific Styles -->
     <style>
@@ -200,12 +200,12 @@
     {
         "@context": "https://schema.org",
         "@type": "Blog",
-        "name": "Blog JNI Consultant",
+        "name": "Blog Jamnasindo",
         "description": "Artikel dan berita terbaru seputar perizinan usaha, bisnis, dan regulasi di Indonesia",
         "url": "https://jniconsultant.com/blog.html",
         "publisher": {
             "@type": "Organization",
-            "name": "JNI Consultant",
+            "name": "Jamnasindo",
             "logo": {
                 "@type": "ImageObject",
                 "url": "https://jniconsultant.com/assets/images/logo-jabat.png"
@@ -244,8 +244,8 @@
             <div class="navbar-brand">
                 <a href="/">
                 <a href="/">
-                    <img src="assets/images/logo-jabat.png" alt="Jaminan Nasional Indonesia" class="logo-img">
-                    <span class="brand-text">Jaminan Nasional<br>Indonesia</span>
+                <img src="assets/images/logo-jabat.png" alt="Jaminan Nasional Indonesia" class="logo-img">
+                <span class="brand-text">Jaminan Nasional<br>Indonesia</span>
                 </a>
             </div>
             <div class="navbar-center">

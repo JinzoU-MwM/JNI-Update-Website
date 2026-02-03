@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Tentang JNI Consultant - Profil perusahaan konsultan perizinan dan bisnis terpercaya di Indonesia.">
+        content="Tentang Jamnasindo - Profil perusahaan konsultan perizinan dan bisnis terpercaya di Indonesia.">
     <link rel="icon" type="image/png" href="assets/images/logo-jabat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css?v=2.0">
-    <title>Tentang Kami - JNI Consultant</title>
+    <title>Tentang Kami - Jamnasindo</title>
 </head>
 
 <body>
@@ -71,11 +71,11 @@
             <div class="about-grid">
                 <div class="about-image">
                     <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=550&h=400&fit=crop"
-                        alt="Tim JNI Consultant">
+                        alt="Tim Jamnasindo">
                 </div>
                 <div class="about-content">
                     <h2>Konsultan Bisnis <span>Terpercaya</span> Sejak 2010</h2>
-                    <p>JNI Consultant adalah perusahaan konsultan yang berfokus pada layanan perizinan usaha dan
+                    <p>Jamnasindo adalah perusahaan konsultan yang berfokus pada layanan perizinan usaha dan
                         konsultasi bisnis. Dengan pengalaman lebih dari 15 tahun, kami telah membantu ratusan perusahaan
                         dalam mengurus berbagai kebutuhan perizinan.</p>
                     <p>Kami berkomitmen memberikan layanan profesional dengan proses yang transparan dan hasil yang
@@ -192,7 +192,7 @@
                 <!-- Card 2: Fandi Rachmat -->
                 <div class="team-card-v2">
                     <div class="team-image-container">
-                        <img src="public/uploads/photo/Fandi.jpg" 
+                        <img src="public_html/uploads/photo/Fandi.jpg" 
                              alt="Fandi Rachmat" loading="lazy">
                     </div>
                     <div class="team-content">

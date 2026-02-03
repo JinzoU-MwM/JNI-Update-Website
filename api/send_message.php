@@ -1,7 +1,7 @@
 <?php
 /**
  * =====================================================
- * JNI Consultant - Send Message API
+ * Jamnasindo - Send Message API
  * =====================================================
  * 
  * Handles incoming messages from Contact Form and Bubble Chat.

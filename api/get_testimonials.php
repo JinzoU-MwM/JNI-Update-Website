@@ -1,7 +1,7 @@
 <?php
 /**
  * =====================================================
- * JNI Consultant - Public Testimonials API
+ * Jamnasindo - Public Testimonials API
  * =====================================================
  * 
  * Returns active testimonials for the public website

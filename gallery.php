@@ -15,12 +15,12 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Galeri dokumentasi proyek dan kegiatan JNI Consultant.">
+    <meta name="description" content="Galeri dokumentasi proyek dan kegiatan Jamnasindo.">
     <link rel="icon" type="image/png" href="assets/images/logo-jabat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
-    <title>Galeri - JNI Consultant</title>
+    <title>Galeri - Jamnasindo</title>
 </head>
 
 <body>

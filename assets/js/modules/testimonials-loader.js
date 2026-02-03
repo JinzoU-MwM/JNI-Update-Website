@@ -56,20 +56,19 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             // Fetch more items to ensure we have enough length for a smooth scroll
             const response = await fetch('api/get_testimonials.php?limit=12');
-            const result = await response.json();
 
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+
+            const result = await response.json();
             let testimonials = [];
 
             if (result.success && result.data.length > 0) {
                 testimonials = result.data;
             } else {
-                // Fallback Data if API is empty or fails (to prevent broken section)
-                testimonials = [
-                    { client_name: 'Budi Santoso', client_role: 'CEO PT Maju Jaya', rating: 5, review_text: 'JNI Consultant sangat membantu proses perizinan perusahaan kami. Sangat profesional!' },
-                    { client_name: 'Siti Aminah', client_role: 'Owner UMKM Berkah', rating: 5, review_text: 'Pelayanan cepat dan ramah. Semua dokumen selesai tepat waktu.' },
-                    { client_name: 'Andi Wijaya', client_role: 'Direktur Utama', rating: 5, review_text: 'Solusi terbaik untuk legalitas bisnis. Terima kasih tim JNI.' },
-                    { client_name: 'Rina Kartika', client_role: 'HR Manager', rating: 4, review_text: 'Konsultasi yang sangat jelas dan solutif. Staff sangat membantu.' }
-                ];
+                console.warn('API returned empty testimonials.');
+                return; // Nothing to show
             }
 
             // Generate HTML for one set
@@ -82,17 +81,15 @@ document.addEventListener('DOMContentLoaded', function () {
             // Inject into DOM
             track1.innerHTML = fullMarqueeContent;
 
-            // For bottom row, we can optionally reverse the order for visual variety
-            // But strict duplication is safer for seamless loops. 
-            // Let's just use the same content for stability.
+            // For bottom row
             track2.innerHTML = fullMarqueeContent;
 
             // Debug
-            console.log('Testimonials loaded and duplicated for marquee.');
+            console.log(`Testimonials loaded: ${testimonials.length} items (duplicated for marquee)`);
 
         } catch (error) {
             console.error('Testimonials loading failed:', error);
-            // Even on error, tracks remain empty or we could inject static placeholders
+            // On error we do nothing - section remains empty as requested (no hardcoded data)
         }
     }
 

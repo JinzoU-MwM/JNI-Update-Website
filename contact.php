@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Hubungi JNI Consultant untuk konsultasi perizinan dan layanan bisnis profesional.">
+        content="Hubungi Jamnasindo untuk konsultasi perizinan dan layanan bisnis profesional.">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
-    <title>Hubungi Kami - JNI Consultant</title>
+    <title>Hubungi Kami - Jamnasindo</title>
 </head>
 
 <body>

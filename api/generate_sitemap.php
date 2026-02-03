@@ -1,7 +1,7 @@
 <?php
 /**
  * =====================================================
- * JNI Consultant - Sitemap Generator
+ * Jamnasindo - Sitemap Generator
  * =====================================================
  * 
  * Generates sitemap.xml from published articles

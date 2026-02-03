@@ -1,7 +1,7 @@
 <?php
 /**
  * =====================================================
- * JNI Consultant - Authentication API
+ * Jamnasindo - Authentication API
  * =====================================================
  * 
  * Handles:

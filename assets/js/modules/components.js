@@ -73,10 +73,36 @@ const ComponentLoader = {
         if (!navbar) return;
 
         // Mobile toggle
+        // Mobile toggle
         if (navbarToggle && navbarCenter) {
-            navbarToggle.addEventListener('click', () => {
+            const toggleMenu = () => {
                 navbarCenter.classList.toggle('active');
                 navbarToggle.classList.toggle('active');
+                document.body.classList.toggle('menu-open'); // Prevent scroll
+            };
+
+            navbarToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleMenu();
+            });
+
+            // Close when clicking a link
+            const links = navbarCenter.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navbarCenter.classList.contains('active')) {
+                        toggleMenu();
+                    }
+                });
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (navbarCenter.classList.contains('active') &&
+                    !navbarCenter.contains(e.target) &&
+                    !navbarToggle.contains(e.target)) {
+                    toggleMenu();
+                }
             });
         }
 

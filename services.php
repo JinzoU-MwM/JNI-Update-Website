@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
-    <title>Layanan Kami - JNI Consultant</title>
+    <title>Layanan Kami - Jamnasindo</title>
 </head>
 
 <body>

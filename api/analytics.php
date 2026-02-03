@@ -1,7 +1,7 @@
 <?php
 /**
  * =====================================================
- * JNI Consultant - Analytics API
+ * Jamnasindo - Analytics API
  * =====================================================
  * 
  * Endpoints:

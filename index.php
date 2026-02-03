@@ -70,15 +70,15 @@ try {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
-    content="JNI Consultant - Konsultan Profesional untuk Perizinan Usaha, PPIU/PIHK, Kontraktor, VISA, Akreditasi IATA, dan Layanan Keuangan di Indonesia.">
+    content="Jamnasindo - Konsultan Profesional untuk Perizinan Usaha, PPIU/PIHK, Kontraktor, VISA, Akreditasi IATA, dan Layanan Keuangan di Indonesia.">
   <meta name="keywords"
     content="konsultan bisnis, izin PPIU, izin PIHK, izin kontraktor, visa, akreditasi IATA, bank garansi, laporan keuangan, perpajakan, Indonesia">
-  <meta name="author" content="JNI Consultant">
+  <meta name="author" content="Jamnasindo">
   <meta name="robots" content="index, follow">
 
   <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="JNI Consultant - Solusi Perizinan & Konsultasi Bisnis">
+  <meta property="og:title" content="Jamnasindo - Solusi Perizinan & Konsultasi Bisnis">
   <meta property="og:description"
     content="Partner terpercaya untuk mengurus segala kebutuhan perizinan dan konsultasi bisnis Anda.">
   <meta property="og:image" content="assets/images/og-image.jpg">
@@ -349,7 +349,7 @@ try {
     <div class="container">
       <div class="section-header">
         <span class="section-badge" data-i18n="why_badge">Mengapa Kami</span>
-        <h2>Alasan Memilih <span>JNI Consultant</span></h2>
+        <h2><span data-i18n="why_title_1">Alasan Memilih </span><span data-i18n="why_title_highlight">Jamnasindo</span></h2>
         <p data-i18n="why_desc">Dengan pengalaman lebih dari 15 tahun, kami telah membantu ratusan perusahaan dalam
           mengurus perizinan dan
           kebutuhan bisnis mereka.</p>
@@ -359,7 +359,7 @@ try {
       <div class="why-block">
         <div class="why-image">
           <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=550&h=400&fit=crop"
-            alt="Tim Profesional JNI Consultant">
+            alt="Tim Profesional Jamnasindo">
         </div>
         <div class="why-content">
           <h2>Tim Profesional dan <span>Berpengalaman</span></h2>
@@ -444,7 +444,7 @@ try {
         <span class="section-badge" data-i18n="testi_badge">Testimoni</span>
         <h2>Apa Kata <span>Klien Kami</span></h2>
         <p data-i18n="testi_desc">Kepuasan klien adalah prioritas utama kami. Berikut adalah pengalaman mereka bekerja
-          sama dengan JNI Consultant.</p>
+          sama dengan Jamnasindo.</p>
       </div>
 
       <div class="testimonials-marquee-wrapper">

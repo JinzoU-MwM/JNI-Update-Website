@@ -1,6 +1,6 @@
 /**
  * =====================================================
- * JNI Consultant - Visitor Tracking Script
+ * Jamnasindo - Visitor Tracking Script
  * =====================================================
  * 
  * Copy this code snippet and paste it in your main.js

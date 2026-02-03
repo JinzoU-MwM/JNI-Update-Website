@@ -17,6 +17,30 @@
         padding: 80px 30px 30px;
         box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
         transition: right 0.3s ease;
+        z-index: 1001;
+    }
+
+    /* Backdrop Overlay */
+    .navbar-center::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .navbar-center.active::before {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        /* Note: JS click outside logic handles closure, this is visual */
+        right: 300px;
+        /* Offset to cover rest of screen */
+        width: 100vw;
     }
 
     .navbar-center.active {
@@ -54,5 +78,121 @@
     .navbar-cta {
         padding: 10px 16px;
         font-size: 0.8rem;
+    }
+}
+
+/* =====================================================
+   Global Responsive Styles 
+   ===================================================== */
+
+/* Tablet & Mobile (Max Width 1024px) */
+@media (max-width: 1024px) {
+
+    /* Grid Collapsing - Tablet (2 Columns) */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .why-block {
+        gap: 40px;
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+        /* Stack Contact on Tablet */
+        gap: 40px;
+    }
+
+    .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2x2 Footer on Tablet */
+        gap: 40px;
+    }
+}
+
+/* Mobile (Max Width 768px) */
+@media (max-width: 768px) {
+
+    /* Global Container */
+    .container {
+        padding: 0 20px;
+    }
+
+    /* Typography */
+    h1 {
+        font-size: 2.2rem !important;
+    }
+
+    h2 {
+        font-size: 1.8rem !important;
+    }
+
+    h3 {
+        font-size: 1.5rem !important;
+    }
+
+    p {
+        font-size: 0.95rem;
+    }
+
+    /* Grid Collapsing - Mobile (1 Column) */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .why-block {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        text-align: center;
+    }
+
+    .why-block.reverse {
+        direction: ltr;
+        /* Reset direction */
+    }
+
+    .why-list li {
+        justify-content: center;
+        text-align: left;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        /* Stack Footer on Mobile */
+        text-align: center;
+        gap: 30px;
+    }
+
+    .footer-brand,
+    .footer-contact ul,
+    .footer-links {
+        align-items: center;
+    }
+
+    .footer-logo {
+        justify-content: center;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+
+    /* Sections Padding */
+    .section,
+    .hero-section {
+        padding: 60px 0;
+    }
+
+    /* Cards */
+    .service-card,
+    .team-card {
+        margin: 0 10px;
+        /* Breathe room if slider */
+    }
+
+    /* Stats */
+    .stat-number-lg {
+        font-size: 2.5rem;
     }
 }

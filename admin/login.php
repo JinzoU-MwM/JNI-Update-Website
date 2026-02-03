@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Admin Login - JNI Consultant</title>
+    <title>Admin Login - Jamnasindo</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -112,7 +112,7 @@
                 <img src="../assets/images/logo-jabat.png" alt="JNI Logo"
                     onerror="this.src='https://via.placeholder.com/60/387C44/fff?text=JNI'">
                 <h1>Admin Panel</h1>
-                <p>JNI Consultant</p>
+                <p>Jamnasindo</p>
             </div>
 
             <div id="alert-container"></div>

@@ -22,7 +22,7 @@
 
 // Main initialization
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 JNI Consultant Website Initialized');
+    console.log('🚀 Jamnasindo Website Initialized');
 
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

@@ -153,11 +153,11 @@ const ArticleDetailModule = {
     const excerpt = article.excerpt || tempDiv.textContent.substring(0, 160).trim() + '...';
 
     // ===== UPDATE PAGE TITLE =====
-    document.getElementById('article-page-title').textContent = `${article.title} - JNI Consultant`;
+    document.getElementById('article-page-title').textContent = `${article.title} - Jamnasindo`;
 
     // ===== UPDATE SEO META TAGS =====
     this.updateMeta('meta-description', excerpt);
-    this.updateMeta('meta-keywords', `${article.category}, perizinan, bisnis, JNI Consultant`);
+    this.updateMeta('meta-keywords', `${article.category}, perizinan, bisnis, Jamnasindo`);
 
     // Canonical URL
     const canonicalUrl = document.getElementById('canonical-url');
@@ -223,12 +223,12 @@ const ArticleDetailModule = {
         "image": article.image_url,
         "author": {
           "@type": "Organization",
-          "name": "JNI Consultant",
+          "name": "Jamnasindo",
           "url": "https://jniconsultant.com"
         },
         "publisher": {
           "@type": "Organization",
-          "name": "JNI Consultant",
+          "name": "Jamnasindo",
           "logo": {
             "@type": "ImageObject",
             "url": "https://jniconsultant.com/assets/images/logo-jabat.png"
