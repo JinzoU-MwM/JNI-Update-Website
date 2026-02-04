@@ -1,7 +1,16 @@
 <?php
 require_once 'api/config.php';
 
-$slug = $_GET['slug'] ?? '';
+// Input validation - only allow alphanumeric and hyphens
+$slug = filter_input(INPUT_GET, 'slug', FILTER_SANITIZE_STRING) ?? '';
+$slug = preg_replace('/[^a-z0-9\-]/', '', strtolower($slug));
+
+// Reject empty or invalid slugs
+if (empty($slug) || strlen($slug) > 100) {
+    header('HTTP/1.0 404 Not Found');
+    header('Location: /services');
+    exit;
+}
 $pdo = getDbConnection();
 
 // Fetch Service Data
@@ -27,7 +36,7 @@ if (!$service) {
     <!-- Fonts & CSS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?= time() ?>">
     
     <style>
         /* Internal Styles for Service Detail */
@@ -337,7 +346,7 @@ if (!$service) {
     <?php include 'assets/components/footer.html'; ?>
 
     <!-- Scripts -->
-    <script src="assets/js/modules/i18n.js"></script>
+    <script src="assets/js/modules/i18n.js?v=<?= time() ?>"></script>
     <script src="assets/js/script.js"></script>
 </body>
 </html>

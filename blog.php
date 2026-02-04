@@ -32,10 +32,10 @@
     <meta name="twitter:image" content="https://jniconsultant.com/assets/images/og-blog.jpg">
 
     <!-- Favicon & Fonts -->
-    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="assets/images/logo-jabat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?= time() ?>">
 
     <title>Artikel & Berita - Jamnasindo</title>
 
@@ -208,7 +208,7 @@
             "name": "Jamnasindo",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://jniconsultant.com/assets/images/logo-jabat.png"
+                "url": "https://jniconsultant.com/assets/images/logo-jamnasindoo.png"
             }
         }
     }
@@ -243,9 +243,7 @@
         <div class="container">
             <div class="navbar-brand">
                 <a href="/">
-                <a href="/">
-                <img src="assets/images/logo-jabat.png" alt="Jaminan Nasional Indonesia" class="logo-img">
-                <span class="brand-text">Jaminan Nasional<br>Indonesia</span>
+                <img src="assets/images/logo-jamnasindoo.png?v=999" alt="Jamnasindo" class="logo-img">
                 </a>
             </div>
             <div class="navbar-center">
@@ -358,7 +356,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="/" class="footer-logo">
-                        <img src="assets/images/logo-jabat.png" alt="Jaminan Nasional Indonesia"
+                        <img src="assets/images/logo-jamnasindoo.png?v=999" alt="Jamnasindo"
                             class="footer-logo-img">
                         <span class="footer-brand-text">Jaminan Nasional<br>Indonesia</span>
                     </a>

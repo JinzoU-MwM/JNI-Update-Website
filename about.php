@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="assets/images/logo-jabat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?= time() ?>">
     <title>Tentang Kami - Jamnasindo</title>
 </head>
 
@@ -19,8 +19,7 @@
         <div class="container">
             <div class="navbar-brand">
                 <a href="/">
-                    <img src="assets/images/logo-jabat.png" alt="Jaminan Nasional Indonesia" class="logo-img">
-                    <span class="brand-text">Jaminan Nasional<br>Indonesia</span>
+                    <img src="assets/images/logo-jamnasindoo.png?v=999" alt="Jamnasindo" class="logo-img">
                 </a>
             </div>
             <div class="navbar-center">
@@ -74,9 +73,9 @@
                         alt="Tim Jamnasindo">
                 </div>
                 <div class="about-content">
-                    <h2>Konsultan Bisnis <span>Terpercaya</span> Sejak 2010</h2>
+                    <h2>Konsultan Bisnis <span>Terpercaya</span> Sejak 2017</h2>
                     <p>Jamnasindo adalah perusahaan konsultan yang berfokus pada layanan perizinan usaha dan
-                        konsultasi bisnis. Dengan pengalaman lebih dari 15 tahun, kami telah membantu ratusan perusahaan
+                        konsultasi bisnis. Dengan pengalaman lebih dari 10 tahun, kami telah membantu ratusan perusahaan
                         dalam mengurus berbagai kebutuhan perizinan.</p>
                     <p>Kami berkomitmen memberikan layanan profesional dengan proses yang transparan dan hasil yang
                         memuaskan. Tim kami terdiri dari para ahli yang berpengalaman di bidangnya masing-masing.</p>
@@ -170,6 +169,33 @@
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
             }
+            
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .team-grid-v2 {
+                    grid-template-columns: 1fr;
+                    max-width: 400px;
+                }
+                
+                .team-image-container {
+                    height: 280px;
+                }
+                
+                .team-content h3 {
+                    font-size: 1.25rem;
+                }
+                
+                .team-role {
+                    font-size: 0.9rem;
+                }
+            }
+            
+            @media (min-width: 769px) and (max-width: 991px) {
+                .team-grid-v2 {
+                    max-width: 100%;
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
         </style>
         <div class="container">
             <div class="section-header">
@@ -192,7 +218,7 @@
                 <!-- Card 2: Fandi Rachmat -->
                 <div class="team-card-v2">
                     <div class="team-image-container">
-                        <img src="public_html/uploads/photo/Fandi.jpg" 
+                        <img src="uploads/photo/Fandi.jpg" 
                              alt="Fandi Rachmat" loading="lazy">
                     </div>
                     <div class="team-content">
@@ -218,7 +244,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="/" class="footer-logo">
-                        <img src="assets/images/logo-jabat.png" alt="Jaminan Nasional Indonesia"
+                        <img src="assets/images/logo-jamnasindoo.png?v=999" alt="Jamnasindo"
                             class="footer-logo-img">
                         <span class="footer-brand-text">Jaminan Nasional<br>Indonesia</span>
                     </a>

@@ -109,7 +109,8 @@
     <div class="login-container">
         <div class="login-card">
             <div class="login-logo">
-                <img src="../assets/images/logo-jabat.png" alt="JNI Logo"
+                <img src="../assets/images/logo-jamnasindoo.png" alt="JNI Logo"
+                    style="width: 180px; mix-blend-mode: multiply;"
                     onerror="this.src='https://via.placeholder.com/60/387C44/fff?text=JNI'">
                 <h1>Admin Panel</h1>
                 <p>Jamnasindo</p>

@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="assets/images/logo-jabat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/css/style.css">
     <title>Hubungi Kami - Jamnasindo</title>
     
     <style>
@@ -33,25 +33,10 @@
         .contact-brand-col {
             flex: 0 0 40%;
             background: linear-gradient(135deg, #387C44 0%, #2d6335 100%);
-            color: #ffffff !important;
+            color: white;
             padding: 50px 40px;
             position: relative;
             overflow: hidden;
-        }
-        
-        /* FORCE ALL TEXT TO WHITE IN GREEN PANEL */
-        .contact-brand-col *,
-        .contact-brand-col h1,
-        .contact-brand-col h2,
-        .contact-brand-col h3,
-        .contact-brand-col h4,
-        .contact-brand-col h5,
-        .contact-brand-col h6,
-        .contact-brand-col p,
-        .contact-brand-col a,
-        .contact-brand-col span,
-        .contact-brand-col div {
-            color: #ffffff !important;
         }
         
         /* Decorative Circles */
@@ -92,11 +77,11 @@
             font-size: 2rem;
             font-weight: 700;
             margin: 0 0 15px 0;
-            color: white !important;
+            color: white;
         }
         
         .brand-title span {
-            color: #4CAF50 !important;
+            color: #4CAF50;
         }
         
         .brand-subtitle {
@@ -104,7 +89,6 @@
             line-height: 1.7;
             margin: 0 0 40px 0;
             opacity: 0.95;
-            color: #ffffff !important;
         }
         
         .contact-info-list {
@@ -132,8 +116,7 @@
         }
         
         .info-icon svg {
-            stroke: white !important;
-            color: white !important;
+            stroke: white;
         }
         
         .info-text h4 {
@@ -143,18 +126,16 @@
             opacity: 0.8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #ffffff !important;
         }
         
         .info-text p {
             font-size: 0.95rem;
             margin: 0;
             line-height: 1.6;
-            color: #ffffff !important;
         }
         
         .info-text a {
-            color: white !important;
+            color: white;
             text-decoration: none;
             transition: opacity 0.3s;
         }
@@ -311,7 +292,144 @@
             }
         }
         
+        /* ===== LOCATION / FIND US SECTION ===== */
+        .location-section {
+            background: #ffffff;
+            padding: 80px 0;
+        }
         
+        .location-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+        
+        .location-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .location-details {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .location-item {
+            display: flex;
+            align-items: start;
+            gap: 20px;
+            padding: 25px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .location-item:hover {
+            box-shadow: 0 8px 30px rgba(56, 124, 68, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        .location-icon {
+            width: 56px;
+            height: 56px;
+            min-width: 56px;
+            background: linear-gradient(135deg, rgba(56, 124, 68, 0.1), rgba(76, 175, 80, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .location-icon svg {
+            stroke: #387C44;
+            width: 28px;
+            height: 28px;
+        }
+        
+        .location-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 8px 0;
+        }
+        
+        .location-content p {
+            color: #64748b;
+            margin: 0;
+            line-height: 1.8;
+        }
+        
+        .location-content a {
+            color: #387C44;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .location-content a:hover {
+            color: #4CAF50;
+        }
+        
+        .location-map {
+            height: 100%;
+        }
+        
+        .map-container {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            min-height: 450px;
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 991px) {
+            .location-split {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .location-info {
+                order: 1;
+            }
+            
+            .location-map {
+                order: 2;
+            }
+            
+            .map-container {
+                min-height: 350px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .location-section {
+                padding: 50px 0;
+            }
+            
+            .location-item {
+                padding: 20px;
+            }
+            
+            .location-icon {
+                width: 48px;
+                height: 48px;
+                min-width: 48px;
+            }
+            
+            .location-icon svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
     </style>
 </head>
 
@@ -367,140 +485,153 @@
         </div>
     </section>
 
-
-    <!-- ===== PREMIUM UNIFIED SPLIT-CARD CONTACT SECTION ===== -->
-    <section class="unified-contact-section">
+    <section class="contact-section">
         <div class="container">
-            <div class="unified-contact-card">
-                <!-- LEFT COLUMN: Brand Voice (Dark Green) -->
-                <div class="contact-brand-col">
-                    <!-- Decorative Circles -->
-                    <div class="circle-decoration circle-1"></div>
-                    <div class="circle-decoration circle-2"></div>
-                    <div class="circle-decoration circle-3"></div>
-                    
-                    <div class="brand-content">
-                        <h2 class="brand-title">Hubungi <span>Kami</span></h2>
-                        <p class="brand-subtitle">Diskusikan kebutuhan legalitas & bisnis Anda bersama tim ahli kami.</p>
-                        
-                        <!-- Contact Info List -->
-                        <div class="contact-info-list">
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                        <circle cx="12" cy="10" r="3"></circle>
-                                    </svg>
-                                </div>
-                                <div class="info-text">
-                                    <h4>Alamat Kantor</h4>
-                                    <p>Jl. Condet Raya No 103E<br>Kramatjati, Jakarta Timur</p>
-                                </div>
-                            </div>
-                            
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                    </svg>
-                                </div>
-                                <div class="info-text">
-                                    <h4>Telepon</h4>
-                                    <p><a href="tel:+6285810000102">+62 858 1000 0102</a></p>
-                                </div>
-                            </div>
-                            
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                        <polyline points="22,6 12,13 2,6"></polyline>
-                                    </svg>
-                                </div>
-                                <div class="info-text">
-                                    <h4>Email</h4>
-                                    <p><a href="mailto:admin@jamnasindo.id">admin@jamnasindo.id</a></p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Mini Map -->
-                        <div class="mini-map">
-                            <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.858887929053!2d106.85279457586886!3d-6.282274461495483!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3c2c9f6be9d%3A0x31a0128c0ed43884!2sPT%20Jaminan%20Nasional%20Indonesia!5e0!3m2!1sid!2sid!4v1770214365935!5m2!1sid!2sid" 
-                                width="100%" 
-                                height="200" 
-                                style="border:0;" 
-                                allowfullscreen="" 
-                                loading="lazy" 
-                                referrerpolicy="no-referrer-when-downgrade">
-                            </iframe>
-                        </div>
+            <div class="contact-split">
+                <!-- LEFT COLUMN: Info & Visual -->
+                <div class="contact-info-col">
+                    <h1 class="contact-title">Hubungi <span>Kami</span></h1>
+                    <p class="contact-subtitle">
+                        Diskusikan kebutuhan legalitas & bisnis Anda bersama tim ahli kami.
+                        Kami siap membantu Anda mencapai tujuan bisnis.
+                    </p>
+
+
+                    <!-- Supporting Image -->
+                    <div class="contact-image">
+                        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=500&h=300&fit=crop"
+                            alt="Tim JNI siap melayani Anda">
                     </div>
                 </div>
-                
-                <!-- RIGHT COLUMN: User Action (White Form) -->
-                <div class="contact-form-col-new">
-                    <h3 class="form-title">Kirim Pesan</h3>
-                    <p class="form-subtitle">Isi formulir di bawah dan tim kami akan segera menghubungi Anda</p>
-                    
-                    <form id="contactForm" method="POST" action="api/contact.php">
-                        <div class="form-row">
+
+                <!-- RIGHT COLUMN: Form Card -->
+                <div class="contact-form-col">
+                    <div class="contact-form-card">
+                        <h3>Kirim Pesan</h3>
+                        <p class="form-subtitle">Isi formulir di bawah dan tim kami akan segera menghubungi Anda.</p>
+
+                        <form id="contactForm">
                             <div class="form-group">
                                 <label for="name">Nama Lengkap *</label>
-                                <input type="text" id="name" name="name" required placeholder="Masukkan nama Anda">
+                                <input type="text" id="name" name="name" required placeholder="Masukkan nama lengkap">
                             </div>
                             <div class="form-group">
-                                <label for="company">Nama Perusahaan</label>
-                                <input type="text" id="company" name="company" placeholder="Nama perusahaan (opsional)">
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="email">Email *</label>
-                                <input type="email" id="email" name="email" required placeholder="email@example.com">
+                                <label for="email">Email Perusahaan *</label>
+                                <input type="email" id="email" name="email" required placeholder="email@perusahaan.com">
                             </div>
                             <div class="form-group">
-                                <label for="phone">No. Telepon *</label>
-                                <input type="tel" id="phone" name="phone" required placeholder="+62 xxx xxxx xxxx">
+                                <label for="phone">No. WhatsApp *</label>
+                                <input type="tel" id="phone" name="phone" required placeholder="08xx-xxxx-xxxx">
                             </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="service">Layanan yang Dibutuhkan</label>
-                            <select id="service" name="service">
-                                <option value="">Pilih Layanan</option>
-                                <option value="ppiu">Izin PPIU/PIHK</option>
-                                <option value="kontraktor">Izin Kontraktor</option>
-                                <option value="visa">Izin VISA</option>
-                                <option value="iata">Akreditasi IATA</option>
-                                <option value="garansi">Bank Garansi</option>
-                                <option value="keuangan">Laporan Keuangan</option>
-                                <option value="pajak">Perpajakan</option>
-                                <option value="lainnya">Lainnya</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Pesan / Kebutuhan *</label>
-                            <textarea id="message" name="message" required rows="4" placeholder="Tuliskan kebutuhan atau pertanyaan Anda..."></textarea>
-                        </div>
-                        
-                        <button type="submit" class="submit-btn">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="22" y1="2" x2="11" y2="13"></line>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                            </svg>
-                            Kirim Pesan
-                        </button>
-                    </form>
+                            <div class="form-group">
+                                <label for="service">Layanan yang Dibutuhkan</label>
+                                <select id="service" name="service">
+                                    <option value="">Pilih Layanan</option>
+                                    <option value="ppiu">Izin PPIU/PIHK</option>
+                                    <option value="kontraktor">Izin Kontraktor</option>
+                                    <option value="visa">Izin VISA</option>
+                                    <option value="iata">Akreditasi IATA</option>
+                                    <option value="garansi">Bank Garansi</option>
+                                    <option value="keuangan">Laporan Keuangan</option>
+                                    <option value="pajak">Perpajakan</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Pesan / Kebutuhan *</label>
+                                <textarea id="message" name="message" required rows="4"
+                                    placeholder="Tuliskan kebutuhan atau pertanyaan Anda..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13" />
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                                </svg>
+                                Kirim Pesan
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- ===== LOCATION / FIND US SECTION ===== -->
+    <section class="location-section">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <span class="section-badge">Find Us</span>
+                <h2>Lokasi <span>Kantor</span></h2>
+                <p>Kunjungi kantor kami atau hubungi tim kami untuk konsultasi</p>
+            </div>
 
+            <div class="location-split">
+                <!-- LEFT: Contact Details -->
+                <div class="location-info">
+                    <div class="location-details">
+                        <!-- Address -->
+                        <div class="location-item">
+                            <div class="location-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div class="location-content">
+                                <h4>Alamat Kantor</h4>
+                                <p>Jl. Condet Raya No 103E,<br>Kramatjati, Jakarta Timur 13530</p>
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="location-item">
+                            <div class="location-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                            </div>
+                            <div class="location-content">
+                                <h4>Telepon</h4>
+                                <p>
+                                    <a href="tel:+6285810000102">+62 858 1000 0102</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="location-item">
+                            <div class="location-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <div class="location-content">
+                                <h4>Email</h4>
+                                <p><a href="mailto:admin@jamnasindo.id">admin@jamnasindo.id</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Google Maps -->
+                <div class="location-map">
+                    <div class="map-container">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.858887929053!2d106.85279457586886!3d-6.282274461495483!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3c2c9f6be9d%3A0x31a0128c0ed43884!2sPT%20Jaminan%20Nasional%20Indonesia!5e0!3m2!1sid!2sid!4v1770214365935!5m2!1sid!2sid" 
+                            width="100%" 
+                            height="450" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 
     <?php include 'assets/components/footer.html'; ?>

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../api/config.php';
+require_once '../api/helpers.php';
 
 // 1. Authentication Check
 function isLoggedIn() {
@@ -13,7 +14,13 @@ if (!isLoggedIn()) {
 }
 
 $pdo = getDbConnection();
-$page = $_GET['page'] ?? 'dashboard'; // Default page
+
+// Validate page parameter against whitelist
+$page = $_GET['page'] ?? 'dashboard';
+if (!isValidPage($page, getAllowedAdminPages())) {
+    $page = 'dashboard'; // Force safe default if invalid page
+}
+
 $action = $_REQUEST['action'] ?? '';
 $message = '';
 $error = '';
@@ -98,6 +105,14 @@ if ($action === 'upload_image') {
 // =====================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
+    // CSRF Protection - validate token for all POST requests
+    $csrfToken = $_POST['csrf_token'] ?? '';
+    if (!validateCSRFToken($csrfToken)) {
+        $error = '⛔ Security Error: Invalid CSRF token. Please try again.';
+        // Log this potential attack
+        error_log('CSRF validation failed for user: ' . ($_SESSION['admin']['username'] ?? 'unknown'));
+    } else {
+    
     // --- SAVE ARTICLE ---
     if ($action === 'save_article') {
         $id = $_POST['id'] ?? null;
@@ -171,8 +186,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // --- SAVE CLIENT LOGO ---
     elseif ($action === 'save_client') {
-        $clientName = trim($_POST['client_name']);
         if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+            // Auto-generate client name from filename (e.g., logo-bca.png -> logo-bca)
+            $originalName = pathinfo($_FILES['logo']['name'], PATHINFO_FILENAME);
+            $clientName = ucwords(str_replace(['-', '_'], ' ', $originalName));
+            
             $res = handleFileUpload($_FILES['logo'], '../assets/images/clients/', 'client');
             if (isset($res['path'])) {
                 $pdo->prepare("INSERT INTO clients (client_name, logo_path, created_at) VALUES (?, ?, NOW())")->execute([$clientName, $res['path']]);
@@ -264,6 +282,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "DB Error: " . $e->getMessage(); 
         }
     }
+    
+    } // End CSRF validation block
 }
 
 // --- INIT DATABASE REMOVED PER USER REQUEST ---
@@ -593,6 +613,7 @@ if ($page === 'edit_service' && isset($_GET['id'])) {
                     <h3>Manajemen Galeri</h3>
                     <div class="card mb-4 p-4 shadow-sm">
                         <form method="POST" enctype="multipart/form-data" class="row align-items-end g-3">
+                            <?php csrfField(); ?>
                             <input type="hidden" name="action" value="save_gallery">
                             <div class="col-md-5">
                                 <label class="form-label">Judul Gambar</label>
@@ -628,6 +649,7 @@ if ($page === 'edit_service' && isset($_GET['id'])) {
                     <h3>Manajemen Testimonial</h3>
                     <div class="card mb-4 p-4 shadow-sm">
                         <form method="POST" enctype="multipart/form-data" class="row g-3">
+                            <?php csrfField(); ?>
                             <input type="hidden" name="action" value="save_testimonial">
                             <div class="col-md-4">
                                 <label class="form-label">Nama Klien</label>
@@ -719,6 +741,7 @@ if ($page === 'edit_service' && isset($_GET['id'])) {
                     <h2><?= $page==='edit_service' ? 'Edit Layanan' : 'Tambah Layanan Baru' ?></h2>
                     <div class="card mt-3 shadow-sm p-4">
                         <form method="POST" enctype="multipart/form-data">
+                            <?php csrfField(); ?>
                             <input type="hidden" name="action" value="save_service">
                             <?php if ($editService): ?>
                                 <input type="hidden" name="id" value="<?= $editService['id'] ?>">
@@ -827,6 +850,7 @@ if ($page === 'edit_service' && isset($_GET['id'])) {
                     <h2><?= $page==='edit' ? 'Edit Artikel' : 'Tambah Artikel Baru' ?></h2>
                     <div class="card mt-3 shadow-sm p-4">
                         <form method="POST" enctype="multipart/form-data">
+                            <?php csrfField(); ?>
                             <input type="hidden" name="action" value="save_article">
                             <?php if ($editArticle): ?>
                                 <input type="hidden" name="id" value="<?= $editArticle['id'] ?>">
@@ -954,6 +978,7 @@ if ($page === 'edit_service' && isset($_GET['id'])) {
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <form method="POST">
+                                                <?php csrfField(); ?>
                                                 <input type="hidden" name="action" value="save_user">
                                                 <input type="hidden" name="id" value="<?= $user['id'] ?>">
                                                 <div class="modal-header">
@@ -1003,6 +1028,7 @@ if ($page === 'edit_service' && isset($_GET['id'])) {
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <form method="POST">
+                                    <?php csrfField(); ?>
                                     <input type="hidden" name="action" value="save_user">
                                     <div class="modal-header">
                                         <h5 class="modal-title">Tambah User Baru</h5>
@@ -1046,16 +1072,14 @@ if ($page === 'edit_service' && isset($_GET['id'])) {
                     <!-- Upload Form -->
                     <div class="card mb-4 p-4 shadow-sm">
                         <form method="POST" enctype="multipart/form-data" class="row align-items-end g-3">
+                            <?php csrfField(); ?>
                             <input type="hidden" name="action" value="save_client">
-                            <div class="col-md-5">
-                                <label class="form-label">Nama Klien/Perusahaan</label>
-                                <input type="text" name="client_name" class="form-control" placeholder="PT. Nama Perusahaan" required>
-                            </div>
-                            <div class="col-md-5">
-                                <label class="form-label">Logo (PNG/JPG, transparent recommended)</label>
+                            <div class="col-md-8">
+                                <label class="form-label">Upload Logo (PNG/JPG, nama file akan menjadi nama klien)</label>
                                 <input type="file" name="logo" class="form-control" accept="image/*" required>
+                                <small class="text-muted">Contoh: logo-bca.png → "Logo Bca"</small>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-4">
                                 <button class="btn btn-success w-100"><i class="bi bi-upload me-1"></i> Upload</button>
                             </div>
                         </form>
@@ -1069,9 +1093,7 @@ if ($page === 'edit_service' && isset($_GET['id'])) {
                                 <img src="../<?= htmlspecialchars($client['logo_path']) ?>" 
                                      alt="<?= htmlspecialchars($client['client_name']) ?>" 
                                      class="img-fluid mb-2" 
-                                     style="max-height: 80px; object-fit: contain; filter: grayscale(100%); opacity: 0.7; transition: all 0.3s;"
-                                     onmouseover="this.style.filter='none'; this.style.opacity='1';"
-                                     onmouseout="this.style.filter='grayscale(100%)'; this.style.opacity='0.7';">
+                                     style="max-height: 80px; object-fit: contain; filter: none; opacity: 1;">
                                 <small class="d-block text-muted text-truncate"><?= htmlspecialchars($client['client_name']) ?></small>
                                 <?php if (canDelete()): ?>
                                     <a href="dashboard.php?page=clients&delete=<?= $client['id'] ?>&type=client" 

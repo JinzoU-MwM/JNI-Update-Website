@@ -2,6 +2,7 @@
 require_once 'api/config.php';
 require_once 'api/tracker.php';
 
+
 // 1. Define Default Static Array
 $services = [
     [
@@ -48,19 +49,27 @@ $services = [
     ]
 ];
 
-// 2. Database Override
-try {
-    $pdo = getDbConnection();
-    // LIMIT 7 as requested
-    $stmt = $pdo->query("SELECT title, slug, short_description, icon_svg, image_url, created_at FROM services ORDER BY created_at ASC LIMIT 7");
-    $dbServices = $stmt->fetchAll();
-    
-    if ($dbServices && count($dbServices) > 0) {
-        $services = $dbServices;
+// 2. Try to fetch from Database (if available)
+if (function_exists('getDbConnection')) {
+    try {
+        $pdo = getDbConnection();
+        $stmt = $pdo->prepare("
+            SELECT id, title, slug, short_description, icon_svg 
+            FROM services 
+            WHERE is_active = 1 
+            ORDER BY display_order ASC
+        ");
+        $stmt->execute();
+        $db_services = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // If we have services from DB, use them instead
+        if (!empty($db_services)) {
+            $services = $db_services;
+        }
+    } catch (Exception $e) {
+        // Silently fall back to static services if DB fails
+        error_log("Services DB Error: " . $e->getMessage());
     }
-} catch (Exception $e) {
-    // Silent fail; continue using $services static array
-    error_log("Services Fetch Error: " . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
@@ -92,7 +101,7 @@ try {
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=<?= time() ?>">
 
   <title>Jaminan Nasional Indonesia - Solusi Perizinan & Konsultasi Bisnis Profesional</title>
 
@@ -129,17 +138,14 @@ try {
 
 <body>
 
-  <!-- ===== NAVBAR - EASTUTE STYLE ===== -->
+  <!-- ===== NAVBAR ===== -->
   <nav class="navbar" id="navbar">
     <div class="container">
-      <!-- LEFT: Brand Logo -->
       <div class="navbar-brand">
         <a href="/">
-          <img src="assets/images/logo-jabat.png" alt="Jaminan Nasional Indonesia" class="logo-img">
-          <span class="brand-text">Jaminan Nasional<br>Indonesia</span>
+          <img src="assets/images/logo-jamnasindoo.png?v=999" alt="Jamnasindo" class="logo-img">
         </a>
       </div>
-      <!-- CENTER: Navigation Links -->
       <div class="navbar-center">
         <ul class="navbar-menu">
           <li><a href="/" class="active" data-i18n="nav_home">Beranda</a></li>
@@ -150,10 +156,7 @@ try {
           <li><a href="contact" data-i18n="nav_contact">Kontak</a></li>
         </ul>
       </div>
-
-      <!-- RIGHT: Action Group -->
       <div class="navbar-actions">
-        <!-- Language Selector -->
         <button class="lang-selector">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -167,11 +170,8 @@ try {
             <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
         </button>
-        <!-- CTA Button -->
         <a href="contact" class="navbar-cta" data-i18n="nav_cta">Konsultasi</a>
       </div>
-
-      <!-- Mobile Toggle -->
       <button class="navbar-toggle" aria-label="Toggle menu">
         <span></span>
         <span></span>
@@ -242,79 +242,201 @@ try {
     <style>
       .clients-section {
         background: #f8fafc;
-        padding: 60px 0;
+        padding: 80px 0;
+        overflow: hidden;
       }
+      
       .clients-section .section-header {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 60px;
       }
+      
       .clients-section .section-header h2 {
-        font-size: 1.8rem;
+        font-size: 2rem;
         color: #1e293b;
+        margin-bottom: 15px;
       }
+      
       .clients-section .section-header p {
         color: #64748b;
         max-width: 600px;
         margin: 0 auto;
+        font-size: 1.05rem;
       }
-      .clients-grid {
-        display: grid;
-        gap: 24px;
-        grid-template-columns: repeat(6, 1fr);
-        max-width: 1140px;
-        margin: 0 auto;
-        padding: 0 20px;
+      
+      /* Marquee Container */
+      .marquee-container {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        margin-top: 20px;
       }
-      @media (max-width: 991px) {
-        .clients-grid {
-          grid-template-columns: repeat(4, 1fr);
-        }
+      
+      /* Single Marquee Row */
+      .marquee-row {
+        overflow: hidden;
+        position: relative;
+        width: 100%;
       }
-      @media (max-width: 576px) {
-        .clients-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
+      
+      /* Track that holds logos */
+      .marquee-track {
+        display: flex;
+        gap: 60px;
+        align-items: center;
+        width: max-content;
       }
-      .client-logo {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
+      
+      /* Row 1: Left to Right */
+      .marquee-row-1 .marquee-track {
+        animation: scrollLeft 40s linear infinite;
+      }
+      
+      /* Row 2: Right to Left */
+      .marquee-row-2 .marquee-track {
+        animation: scrollRight 40s linear infinite;
+      }
+      
+      /* Pause on hover */
+      .marquee-row:hover .marquee-track {
+        animation-play-state: paused;
+      }
+      
+      /* Individual Logo Item */
+      .marquee-logo {
+        flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        padding: 20px 15px;
         transition: all 0.3s ease;
       }
-      .client-logo img {
-        max-width: 100%;
-        max-height: 60px;
+      
+      .marquee-logo img {
+        height: 70px;
+        width: auto;
+        max-width: 180px;
         object-fit: contain;
         filter: grayscale(100%);
         opacity: 0.6;
-        transition: all 0.3s ease;
+        transition: all 0.4s ease;
+        cursor: pointer;
       }
-      .client-logo:hover {
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        transform: translateY(-4px);
-      }
-      .client-logo:hover img {
+      
+      /* Hover Effect: Full Color + Scale */
+      .marquee-logo:hover img {
         filter: grayscale(0%);
         opacity: 1;
+        transform: scale(1.15);
+      }
+      
+      /* Animations */
+      @keyframes scrollLeft {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      
+      @keyframes scrollRight {
+        0% {
+          transform: translateX(-50%);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .clients-section {
+          padding: 60px 0;
+        }
+        
+        .marquee-container {
+          gap: 30px;
+        }
+        
+        .marquee-track {
+          gap: 40px;
+        }
+        
+        .marquee-logo img {
+          height: 50px;
+          max-width: 140px;
+        }
+        
+        .marquee-row-1 .marquee-track,
+        .marquee-row-2 .marquee-track {
+          animation-duration: 30s;
+        }
       }
     </style>
+    
     <div class="container">
       <div class="section-header">
         <span class="section-badge">Dipercaya Oleh</span>
         <h2>Klien <span>Kami</span></h2>
         <p>Berbagai perusahaan dan instansi telah mempercayakan kebutuhan perizinan mereka kepada kami.</p>
       </div>
-      <div class="clients-grid">
-        <?php foreach ($clientLogos as $client): ?>
-          <div class="client-logo" title="<?= htmlspecialchars($client['client_name']) ?>">
-            <img src="<?= htmlspecialchars($client['logo_path']) ?>" alt="<?= htmlspecialchars($client['client_name']) ?>" loading="lazy">
-          </div>
-        <?php endforeach; ?>
+    </div>
+    
+    <div class="marquee-container">
+      <!-- Row 1: Left to Right -->
+      <div class="marquee-row marquee-row-1">
+        <div class="marquee-track">
+          <?php 
+          // First set of logos
+          foreach ($clientLogos as $client): 
+          ?>
+            <div class="marquee-logo" title="<?= htmlspecialchars($client['client_name']) ?>">
+              <img src="<?= htmlspecialchars($client['logo_path']) ?>" 
+                   alt="<?= htmlspecialchars($client['client_name']) ?>" 
+                   loading="lazy">
+            </div>
+          <?php endforeach; ?>
+          
+          <?php 
+          // Duplicate for seamless loop
+          foreach ($clientLogos as $client): 
+          ?>
+            <div class="marquee-logo" title="<?= htmlspecialchars($client['client_name']) ?>">
+              <img src="<?= htmlspecialchars($client['logo_path']) ?>" 
+                   alt="<?= htmlspecialchars($client['client_name']) ?>" 
+                   loading="lazy">
+            </div>
+          <?php endforeach; ?>
+        </div>
+      </div>
+      
+      <!-- Row 2: Right to Left -->
+      <div class="marquee-row marquee-row-2">
+        <div class="marquee-track">
+          <?php 
+          // First set of logos (reversed order for variety)
+          $reversedLogos = array_reverse($clientLogos);
+          foreach ($reversedLogos as $client): 
+          ?>
+            <div class="marquee-logo" title="<?= htmlspecialchars($client['client_name']) ?>">
+              <img src="<?= htmlspecialchars($client['logo_path']) ?>" 
+                   alt="<?= htmlspecialchars($client['client_name']) ?>" 
+                   loading="lazy">
+            </div>
+          <?php endforeach; ?>
+          
+          <?php 
+          // Duplicate for seamless loop
+          foreach ($reversedLogos as $client): 
+          ?>
+            <div class="marquee-logo" title="<?= htmlspecialchars($client['client_name']) ?>">
+              <img src="<?= htmlspecialchars($client['logo_path']) ?>" 
+                   alt="<?= htmlspecialchars($client['client_name']) ?>" 
+                   loading="lazy">
+            </div>
+          <?php endforeach; ?>
+        </div>
       </div>
     </div>
   </section>
@@ -478,13 +600,19 @@ try {
   </section>
 
   <!-- ===== FOOTER ===== -->
-  <!-- ===== FOOTER ===== -->
   <?php include 'assets/components/footer.html'; ?>
 
   <!-- JavaScript -->
-  <script src="assets/js/script.js"></script>
-  <script src="assets/js/modules/i18n.js"></script>
-  <script src="assets/js/modules/testimonials-loader.js"></script>
+  <script src="assets/js/modules/components.js?v=<?= time() ?>"></script>
+  <script>
+    // Manually initialize since script loads after DOMContentLoaded
+    if (typeof ComponentLoader !== 'undefined') {
+      ComponentLoader.init();
+    }
+  </script>
+  <script src="assets/js/script.js?v=<?= time() ?>"></script>
+  <script src="assets/js/modules/i18n.js?v=<?= time() ?>"></script>
+  <script src="assets/js/modules/testimonials-loader.js?v=<?= time() ?>"></script>
   
 </body>
 

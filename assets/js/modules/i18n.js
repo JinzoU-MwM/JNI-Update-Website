@@ -19,7 +19,7 @@ const I18n = {
         "nav_cta": { "id": "Konsultasi", "en": "Consult Us" },
 
         // Hero
-        "hero_badge": { "id": "🏆 Konsultan Terpercaya Sejak 2010", "en": "🏆 Trusted Consultant Since 2010" },
+        "hero_badge": { "id": "🏆 Konsultan Terpercaya Sejak 2017", "en": "🏆 Trusted Consultant Since 2017" },
         "hero_title_1": { "id": "Solusi ", "en": "Professional " },
         "hero_title_highlight": { "id": "Perizinan", "en": "Licensing" },
         "hero_title_2": { "id": " & Konsultasi Bisnis Profesional", "en": " & Business Consulting" },

@@ -21,6 +21,11 @@
     padding: 15px 0;
 }
 
+/* Inner Page Navbar - Green background from start */
+.navbar.nav-inner {
+    background: var(--primary-deep, #1e4d2b);
+}
+
 /* 3-Column Container Layout */
 .navbar .container {
     display: flex;
@@ -41,9 +46,18 @@
 
 .navbar-brand img,
 .navbar-brand .logo-img {
-    height: 45px;
+    height: 110px !important;
     width: auto;
     object-fit: contain;
+    /* Default: White logo on green/transparent navbar */
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+}
+
+/* Scrolled state: Original logo colors on white navbar */
+.navbar.scrolled .navbar-brand img,
+.navbar.scrolled .navbar-brand .logo-img {
+    filter: none;
 }
 
 .navbar-brand .brand-text {
