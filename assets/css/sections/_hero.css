@@ -174,18 +174,8 @@
 
 /* Hero Responsive */
 @media (max-width: 991px) {
-    .hero .container {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
-
     .hero-content {
         max-width: 100%;
-    }
-
-    .hero-image {
-        max-width: 600px;
-        margin: 0 auto;
     }
 
     .hero-buttons {
@@ -200,6 +190,7 @@
 @media (max-width: 768px) {
     .hero {
         padding: 120px 0 60px;
+        min-height: 80vh;
     }
 
     .hero-buttons {
@@ -209,5 +200,13 @@
     .hero-stats {
         flex-wrap: wrap;
         gap: 30px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
     }
 }

@@ -75,3 +75,37 @@
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(56, 124, 68, 0.3);
 }
+
+/* ===== HERO SECTION BUTTON OVERRIDES ===== */
+/* Maximum Contrast for Dark Overlay Background */
+
+/* Hero Primary Button: White BG with Deep Green Text */
+.hero .btn-primary {
+    background: #ffffff;
+    color: #1a5f37;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+}
+
+.hero .btn-primary:hover {
+    background: #f8f9fa;
+    color: #1a5f37;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* Hero Outline Button: Transparent with White Border */
+.hero .btn-outline {
+    background: transparent;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    backdrop-filter: blur(10px);
+}
+
+.hero .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
