@@ -24,6 +24,11 @@ app.use(express.json({ limit: '10mb' }));
 
 const contactLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { error: 'Too many requests' } });
 
+// Root redirect
+app.get('/', (req, res) => {
+    res.redirect('/api');
+});
+
 app.get('/api', (req, res) => {
     res.json({ ok: true, dbReady, initErrors, node: process.version });
 });
