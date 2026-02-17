@@ -1,84 +1,45 @@
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
-require('dotenv').config();
+try { require('dotenv').config(); } catch (e) { /* ignore */ }
 
-// Initialize Supabase client (validates env vars on import)
-require('../src/config/db');
+const initErrors = [];
 
-// Import routes
-const servicesRoute = require('../src/routes/services');
-const testimonialsRoute = require('../src/routes/testimonials');
-const clientsRoute = require('../src/routes/clients');
-const articlesRoute = require('../src/routes/articles');
-const galleryRoute = require('../src/routes/gallery');
-const contactRoute = require('../src/routes/contact');
+// DB
+let dbReady = false;
+try { const s = require('../src/config/db'); dbReady = s !== null; } catch (e) { initErrors.push('db: ' + e.message); }
+
+// All 6 routes
+let svc, test, cli, art, gal, con;
+try { svc = require('../src/routes/services'); } catch (e) { initErrors.push('svc: ' + e.message); }
+try { test = require('../src/routes/testimonials'); } catch (e) { initErrors.push('test: ' + e.message); }
+try { cli = require('../src/routes/clients'); } catch (e) { initErrors.push('cli: ' + e.message); }
+try { art = require('../src/routes/articles'); } catch (e) { initErrors.push('art: ' + e.message); }
+try { gal = require('../src/routes/gallery'); } catch (e) { initErrors.push('gal: ' + e.message); }
+try { con = require('../src/routes/contact'); } catch (e) { initErrors.push('con: ' + e.message); }
 
 const app = express();
-
-// === MIDDLEWARE ===
-
-// CORS — allow frontend origin
-app.use(cors({
-    origin: process.env.FRONTEND_URL || '*',
-    methods: ['GET', 'POST'],
-    credentials: true,
-}));
-
-// Parse JSON body
+app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '10mb' }));
 
-// Rate limiting for contact form
-const contactLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10, // max 10 requests per window
-    message: { error: 'Too many requests, please try again later.' }
-});
+const contactLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { error: 'Too many requests' } });
 
-// === ROUTES ===
 app.get('/api', (req, res) => {
-    res.json({
-        message: 'JNI Consultant API',
-        version: '1.0.0',
-        database: 'Supabase (PostgreSQL)',
-        endpoints: [
-            'GET /api/services',
-            'GET /api/services/:slug',
-            'GET /api/testimonials',
-            'GET /api/clients',
-            'GET /api/articles',
-            'GET /api/articles/:slug',
-            'GET /api/gallery',
-            'POST /api/contact',
-        ]
-    });
+    res.json({ ok: true, dbReady, initErrors, node: process.version });
 });
 
-app.use('/api/services', servicesRoute);
-app.use('/api/testimonials', testimonialsRoute);
-app.use('/api/clients', clientsRoute);
-app.use('/api/articles', articlesRoute);
-app.use('/api/gallery', galleryRoute);
-app.use('/api/contact', contactLimiter, contactRoute);
+if (svc) app.use('/api/services', svc);
+if (test) app.use('/api/testimonials', test);
+if (cli) app.use('/api/clients', cli);
+if (art) app.use('/api/articles', art);
+if (gal) app.use('/api/gallery', gal);
+if (con) app.use('/api/contact', contactLimiter, con);
 
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({ error: 'Endpoint not found' });
-});
+app.use(function notFound(req, res) { res.status(404).json({ error: 'Not found' }); });
+app.use(function errorHandler(err, req, res, _next) { res.status(500).json({ error: 'Server error' }); });
 
-// Error handler
-app.use((err, req, res, next) => {
-    console.error('Server Error:', err);
-    res.status(500).json({ error: 'Internal server error' });
-});
-
-// Start server (local dev only — Vercel uses serverless)
 if (process.env.NODE_ENV !== 'production') {
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-        console.log(`🚀 API running at http://localhost:${PORT}/api`);
-    });
+    app.listen(process.env.PORT || 5000, () => console.log('🚀 Running'));
 }
 
-// Export for Vercel serverless
 module.exports = app;
