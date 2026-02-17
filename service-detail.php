@@ -263,13 +263,45 @@ if (!$service) {
 <body>
 
     <!-- Navbar Loaded via JS -->
-    <div id="navbar-placeholder"></div> 
-    <script>
-        fetch('assets/components/navbar.html').then(r => r.text()).then(h => {
-            document.getElementById('navbar-placeholder').innerHTML = h;
-            if(window.I18n) window.I18n.init(); 
-        });
-    </script>
+    <!-- ===== NAVBAR - SERVICE DETAIL STYLE ===== -->
+    <nav class="navbar nav-inner" id="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="/">
+                    <img src="assets/images/logo-jamnasindoo.png?v=999" alt="Jamnasindo" class="logo-img">
+                </a>
+            </div>
+            <div class="navbar-center">
+                <ul class="navbar-menu">
+                    <li><a href="/">Beranda</a></li>
+                    <li><a href="services">Layanan</a></li>
+                    <li><a href="about">Tentang Kami</a></li>
+                    <li><a href="blog">Artikel</a></li>
+                    <li><a href="gallery">Galeri</a></li>
+                    <li><a href="contact">Kontak</a></li>
+                </ul>
+            </div>
+            <div class="navbar-actions">
+                <button class="lang-selector">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                        </path>
+                    </svg>
+                    <span>ID</span>
+                    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <a href="contact" class="navbar-cta">Konsultasi</a>
+            </div>
+            <button class="navbar-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
 
     <header class="service-hero">
         <div class="container">

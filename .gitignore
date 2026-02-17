@@ -3,3 +3,12 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# Environment secrets
+backend/.env
+frontend/.env
+frontend/.env.local
+
+# Build outputs
+frontend/.svelte-kit/
+frontend/build/

@@ -1,0 +1,21 @@
+{
+  "name": "jni-backend",
+  "version": "1.0.0",
+  "description": "Jamnasindo API Backend - Express.js + Supabase",
+  "main": "api/index.js",
+  "scripts": {
+    "dev": "node --watch api/index.js",
+    "start": "node api/index.js",
+    "seed": "node seed.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

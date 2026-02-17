@@ -211,7 +211,7 @@ if (function_exists('getDbConnection')) {
         </div>
       </div>
       <div class="hero-image">
-        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=500&fit=crop"
+        <img src="assets/images/hero-section.png"
           alt="Tim Konsultan Profesional JNI">
       </div>
     </div>
@@ -235,6 +235,15 @@ if (function_exists('getDbConnection')) {
       $clientLogos = $clientStmt->fetchAll();
   } catch (Exception $e) {
       // Silent fail - table might not exist yet
+  }
+
+  // Fetch testimonials (Refactored to PHP SSR)
+  $testimonials = [];
+  try {
+      $testiStmt = $pdo->query("SELECT * FROM testimonials WHERE is_active = 1 ORDER BY created_at DESC LIMIT 12");
+      $testimonials = $testiStmt->fetchAll();
+  } catch (Exception $e) {
+      // Silent fail
   }
   ?>
   <?php if (count($clientLogos) > 0): ?>
@@ -317,8 +326,8 @@ if (function_exists('getDbConnection')) {
         width: auto;
         max-width: 180px;
         object-fit: contain;
-        filter: grayscale(100%);
-        opacity: 0.6;
+        filter: none;
+        opacity: 1;
         transition: all 0.4s ease;
         cursor: pointer;
       }
@@ -480,7 +489,7 @@ if (function_exists('getDbConnection')) {
       <!-- Block 1: Image Left, Text Right -->
       <div class="why-block">
         <div class="why-image">
-          <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=550&h=400&fit=crop"
+          <img src="assets/images/why-us.png"
             alt="Tim Profesional Jamnasindo">
         </div>
         <div class="why-content">
@@ -520,7 +529,7 @@ if (function_exists('getDbConnection')) {
       <!-- Block 2: Text Left, Image Right (Reversed) -->
       <div class="why-block reverse">
         <div class="why-image">
-          <img src="https://images.unsplash.com/photo-1553028826-f4804a6dba3b?w=550&h=400&fit=crop"
+          <img src="assets/images/why-us2.png"
             alt="Proses Cepat dan Terpercaya">
         </div>
         <div class="why-content">
@@ -570,19 +579,69 @@ if (function_exists('getDbConnection')) {
       </div>
 
       <div class="testimonials-marquee-wrapper">
+        <?php if (count($testimonials) > 0): ?>
+        
         <!-- Top Row: Scrolls RIGHT -->
         <div class="marquee-row">
           <div class="marquee-track scroll-right" id="marquee-track-1">
-            <!-- JS will populate this -->
+            <?php 
+            // Render Testimonials Loop (Duplicated for Infinite Scroll)
+            for ($i = 0; $i < 2; $i++): 
+                foreach ($testimonials as $testi):
+                    $avatarUrl = !empty($testi['photo_url']) ? $testi['photo_url'] : 
+                        'https://ui-avatars.com/api/?name=' . urlencode($testi['client_name']) . '&background=387C44&color=fff';
+            ?>
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <?php for ($r = 1; $r <= 5; $r++): ?>
+                        <span class="star <?= $r <= $testi['rating'] ? '' : 'empty' ?>"><?= $r <= $testi['rating'] ? '★' : '☆' ?></span>
+                    <?php endfor; ?>
+                </div>
+                <p class="testimonial-text">"<?= htmlspecialchars($testi['review_text']) ?>"</p>
+                <div class="testimonial-profile">
+                    <img src="<?= $avatarUrl ?>" alt="<?= htmlspecialchars($testi['client_name']) ?>" class="testimonial-avatar" loading="lazy">
+                    <div class="testimonial-info">
+                        <h4><?= htmlspecialchars($testi['client_name']) ?></h4>
+                        <p><?= htmlspecialchars($testi['client_role']) ?></p>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; endfor; ?>
           </div>
         </div>
 
         <!-- Bottom Row: Scrolls LEFT -->
         <div class="marquee-row">
           <div class="marquee-track scroll-left" id="marquee-track-2">
-            <!-- JS will populate this -->
+            <?php 
+            // Render Testimonials Loop (Duplicated for Infinite Scroll)
+            for ($i = 0; $i < 2; $i++): 
+                foreach ($testimonials as $testi):
+                    $avatarUrl = !empty($testi['photo_url']) ? $testi['photo_url'] : 
+                        'https://ui-avatars.com/api/?name=' . urlencode($testi['client_name']) . '&background=387C44&color=fff';
+            ?>
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <?php for ($r = 1; $r <= 5; $r++): ?>
+                        <span class="star <?= $r <= $testi['rating'] ? '' : 'empty' ?>"><?= $r <= $testi['rating'] ? '★' : '☆' ?></span>
+                    <?php endfor; ?>
+                </div>
+                <p class="testimonial-text">"<?= htmlspecialchars($testi['review_text']) ?>"</p>
+                <div class="testimonial-profile">
+                    <img src="<?= $avatarUrl ?>" alt="<?= htmlspecialchars($testi['client_name']) ?>" class="testimonial-avatar" loading="lazy">
+                    <div class="testimonial-info">
+                        <h4><?= htmlspecialchars($testi['client_name']) ?></h4>
+                        <p><?= htmlspecialchars($testi['client_role']) ?></p>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; endfor; ?>
           </div>
         </div>
+        
+        <?php else: ?>
+            <p class="text-center text-muted">Belum ada testimoni.</p>
+        <?php endif; ?>
       </div>
     </div>
   </section>
@@ -612,7 +671,7 @@ if (function_exists('getDbConnection')) {
   </script>
   <script src="assets/js/script.js?v=<?= time() ?>"></script>
   <script src="assets/js/modules/i18n.js?v=<?= time() ?>"></script>
-  <script src="assets/js/modules/testimonials-loader.js?v=<?= time() ?>"></script>
+  <!-- <script src="assets/js/modules/testimonials-loader.js?v=<?= time() ?>"></script> -->
   
 </body>
 
