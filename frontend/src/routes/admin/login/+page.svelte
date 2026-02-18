@@ -21,6 +21,8 @@
     error = '';
 
     try {
+      console.log('Attempting login with:', form.email);
+
       const response = await fetch('https://backend-nine-dun-99.vercel.app/api/auth/login', {
         method: 'POST',
         headers: {
@@ -29,7 +31,10 @@
         body: JSON.stringify(form)
       });
 
+      console.log('Response status:', response.status);
+
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');
@@ -41,6 +46,7 @@
       // Redirect to dashboard
       goto('/admin/dashboard');
     } catch (err) {
+      console.error('Login error:', err);
       error = err instanceof Error ? err.message : 'An error occurred during login';
     } finally {
       loading = false;

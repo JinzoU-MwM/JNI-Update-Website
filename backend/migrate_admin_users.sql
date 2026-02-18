@@ -16,7 +16,9 @@ CREATE INDEX IF NOT EXISTS idx_admin_users_email ON admin_users(email);
 -- Create index on is_active for filtering
 CREATE INDEX IF NOT EXISTS idx_admin_users_is_active ON admin_users(is_active);
 
--- Trigger to update updated_at timestamp
+-- Trigger to update updated_at timestamp (compatible with all PostgreSQL versions)
+DROP TRIGGER IF EXISTS update_admin_users_updated_at ON admin_users;
+
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -25,12 +27,17 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER IF NOT EXISTS update_admin_users_updated_at
+CREATE TRIGGER update_admin_users_updated_at
   BEFORE UPDATE ON admin_users
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
 -- Insert default admin user (password: Admin@123)
--- Run this in Supabase SQL editor or use the seed script instead
--- INSERT INTO admin_users (email, password_hash, name, role)
--- VALUES ('admin@jni.com', '$2a$10$rKx9JqWxKz4wVzYqJG0qO5vRm5JmN0F1E5tZyF7qF3wP8kLz6Xu', 'Admin User', 'admin');
+-- Only insert if the admin user doesn't exist yet
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM admin_users WHERE email = 'admin@jni.com') THEN
+    INSERT INTO admin_users (email, password_hash, name, role)
+    VALUES ('admin@jni.com', '$2a$10$rKx9JqWxKz4wVzYqJG0qO5vRm5JmN0F1E5tZyF7qF3wP8kLz6Xu', 'Admin User', 'admin');
+  END IF;
+END $$;

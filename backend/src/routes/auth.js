@@ -14,6 +14,8 @@ router.post('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
+    console.log('Login attempt:', { email, passwordLength: password?.length });
+
     // Validate input
     if (!email || !password) {
       throw new AppError('Email and password are required', 400, 'VALIDATION_ERROR');
@@ -27,13 +29,18 @@ router.post('/login', async (req, res, next) => {
       .eq('is_active', true)
       .single();
 
+    console.log('Admin user found:', !!admin, 'Error:', error);
+
     if (error || !admin) {
       logger.warn('Login attempt with invalid email:', { email });
       throw new AppError('Invalid email or password', 401, 'UNAUTHORIZED');
     }
 
     // Verify password
+    console.log('Comparing passwords...');
     const isValidPassword = await bcrypt.compare(password, admin.password_hash);
+
+    console.log('Password valid:', isValidPassword);
 
     if (!isValidPassword) {
       logger.warn('Login attempt with invalid password:', { email });
@@ -65,6 +72,7 @@ router.post('/login', async (req, res, next) => {
       }
     });
   } catch (error) {
+    console.error('Auth error:', error);
     next(error);
   }
 });
