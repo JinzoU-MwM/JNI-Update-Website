@@ -2,11 +2,19 @@
 // for information about these interfaces
 declare global {
 	namespace App {
-		// interface Error {}
-		// interface Locals {}
-		// interface PageData {}
-		// interface PageState {}
-		// interface Platform {}
+		interface Error {
+			message: string;
+			code?: string;
+			status?: number;
+		}
+
+		interface PageData {
+			error?: App.Error;
+		}
+
+		interface Platform {
+			// Add platform-specific types if needed
+		}
 	}
 }
 

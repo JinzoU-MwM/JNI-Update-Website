@@ -2,6 +2,26 @@
    JNI Consultant — Global Styles
    ============================================ */
 
+/* === Accessibility: Skip Link === */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 12px 24px;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
 /* === CSS Variables === */
 :root {
     /* Colors */
@@ -47,6 +67,21 @@
     --radius-lg: 16px;
     --radius-xl: 24px;
     --transition: all 0.3s ease;
+
+    /* Focus styles for accessibility */
+    --focus-outline: 3px solid var(--primary);
+    --focus-offset: 2px;
+}
+
+/* === Focus Styles === */
+*:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+/* Skip the focus outline for mouse users */
+*:focus:not(:focus-visible) {
+  outline: none;
 }
 
 /* === Reset & Base === */

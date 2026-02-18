@@ -1,6 +1,10 @@
 <script lang="ts">
+  import SkeletonCard from '$lib/components/SkeletonCard.svelte';
+  import SkeletonText from '$lib/components/SkeletonText.svelte';
+  import ErrorMessage from '$lib/components/ErrorMessage.svelte';
+
   let { data } = $props();
-  const { services, testimonials, clients } = data;
+  const { services = [], testimonials = [], clients = [], error } = data;
 
   // Duplicate testimonials for seamless marquee
   const row1 = [...testimonials, ...testimonials];
@@ -60,21 +64,33 @@
     </div>
 
     <div class="services-grid">
-      {#each services as service}
-        <a href="/services/{service.slug}" class="service-card">
-          <div class="service-icon">
-            {#if service.icon_svg}
-              {@html service.icon_svg}
-            {:else if service.image_url}
-              <img src={service.image_url} alt={service.title} style="width:40px;height:40px;object-fit:contain;" />
-            {/if}
-          </div>
-          <h3>{service.title}</h3>
-          <p>{service.short_description}</p>
-          <span class="btn-card">Selengkapnya</span>
-        </a>
-      {/each}
+      {#if services.length === 0}
+        <div class="loading-state">
+          {#each Array(6) as _}
+            <SkeletonCard height="280px" />
+          {/each}
+        </div>
+      {:else}
+        {#each services as service}
+          <a href="/services/{service.slug}" class="service-card">
+            <div class="service-icon">
+              {#if service.icon_svg}
+                {@html service.icon_svg}
+              {:else if service.image_url}
+                <img src={service.image_url} alt={service.title} style="width:40px;height:40px;object-fit:contain;" />
+              {/if}
+            </div>
+            <h3>{service.title}</h3>
+            <p>{service.short_description}</p>
+            <span class="btn-card">Selengkapnya</span>
+          </a>
+        {/each}
+      {/if}
     </div>
+
+    {#if error}
+      <ErrorMessage title="Gagal memuat layanan" message={error} />
+    {/if}
   </div>
 </section>
 

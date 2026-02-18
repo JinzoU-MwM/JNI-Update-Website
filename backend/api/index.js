@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 try { require('dotenv').config(); } catch (e) { /* ignore */ }
 
@@ -18,11 +19,62 @@ try { art = require('../src/routes/articles'); } catch (e) { initErrors.push('ar
 try { gal = require('../src/routes/gallery'); } catch (e) { initErrors.push('gal: ' + e.message); }
 try { con = require('../src/routes/contact'); } catch (e) { initErrors.push('con: ' + e.message); }
 
+const { errorHandler, notFound } = require('../src/middleware/errorHandler');
+const logger = require('../src/config/logger');
+
 const app = express();
-app.use(cors({ origin: '*' }));
+
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false
+}));
+
+// CORS - Restrict to allowed origins
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:5173', 'https://jni-consultant.vercel.app'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json({ limit: '10mb' }));
 
-const contactLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { error: 'Too many requests' } });
+// Request logging
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.path}`, {
+    ip: req.ip,
+    userAgent: req.get('user-agent')
+  });
+  next();
+});
+
+// Rate limiters
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { error: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
 
 // Root redirect
 app.get('/', (req, res) => {
@@ -33,15 +85,15 @@ app.get('/api', (req, res) => {
     res.json({ ok: true, dbReady, initErrors, node: process.version });
 });
 
-if (svc) app.use('/api/services', svc);
-if (test) app.use('/api/testimonials', test);
-if (cli) app.use('/api/clients', cli);
-if (art) app.use('/api/articles', art);
-if (gal) app.use('/api/gallery', gal);
+if (svc) app.use('/api/services', generalLimiter, svc);
+if (test) app.use('/api/testimonials', generalLimiter, test);
+if (cli) app.use('/api/clients', generalLimiter, cli);
+if (art) app.use('/api/articles', generalLimiter, art);
+if (gal) app.use('/api/gallery', generalLimiter, gal);
 if (con) app.use('/api/contact', contactLimiter, con);
 
-app.use(function notFound(req, res) { res.status(404).json({ error: 'Not found' }); });
-app.use(function errorHandler(err, req, res, _next) { res.status(500).json({ error: 'Server error' }); });
+app.get('*', notFound);
+app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'production') {
     app.listen(process.env.PORT || 5000, () => console.log('🚀 Running'));

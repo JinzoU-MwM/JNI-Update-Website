@@ -1,35 +1,47 @@
 const express = require('express');
 const supabase = require('../config/db');
+const { sanitizeHtml } = require('../middleware/validation');
+const { AppError } = require('../middleware/errorHandler');
+const logger = require('../config/logger');
+const { getStorageUrl } = require('../utils/storage');
 
 const router = express.Router();
 
 // GET /api/gallery — List gallery items
-router.get('/', async (req, res) => {
-    try {
-        let query = supabase
-            .from('gallery')
-            .select('*')
-            .order('created_at', { ascending: false });
+router.get('/', async (req, res, next) => {
+  try {
+    const { category } = req.query;
 
-        if (req.query.category && req.query.category !== 'all') {
-            query = query.eq('category', req.query.category);
-        }
+    const { data: allItems, error: countError } = await supabase
+      .from('gallery')
+      .select('category, *')
+      .order('created_at', { ascending: false });
 
-        const { data: items, error } = await query;
-        if (error) throw error;
+    if (countError) throw countError;
 
-        // Get unique categories
-        const { data: catData } = await supabase
-            .from('gallery')
-            .select('category')
-            .order('category');
+    let items = allItems;
 
-        const categories = [...new Set((catData || []).map(c => c.category))];
-
-        res.json({ items, categories });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch gallery' });
+    if (category && category !== 'all') {
+      const sanitizedCategory = sanitizeHtml(category);
+      items = items.filter(item => item.category === sanitizedCategory);
     }
+
+    const galleryItems = items.map(item => ({
+      ...item,
+      image_url: getStorageUrl(item.image_url)
+    }));
+
+    const categories = ['all', ...new Set(allItems?.map(item => item.category) || [])];
+
+    logger.info('Gallery fetched', { category, itemCount: galleryItems.length, categoryCount: categories.length });
+
+    res.json({
+      items: galleryItems,
+      categories
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;

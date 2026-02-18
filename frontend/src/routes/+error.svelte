@@ -46,14 +46,14 @@
 
 <style>
   .error-page {
-    min-height: 80vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px 24px;
+    padding: 120px 24px 60px;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(165deg, #f8fafc 0%, #f1f5f9 40%, #e8f5e9 100%);
+    background: linear-gradient(180deg, var(--primary-dark, #1e4d2b) 0%, var(--primary, #387C44) 15%, #e8f5e9 40%, #f1f5f9 100%);
   }
 
   .error-container {

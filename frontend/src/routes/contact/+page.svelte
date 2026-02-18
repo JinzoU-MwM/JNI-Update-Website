@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { fetchAPI } from '$lib/api';
+  import { api } from '$lib/api';
+  import type { ContactFormData } from '$lib/types';
 
   let { data } = $props();
 
-  let form = $state({
+  let form = $state<ContactFormData>({
     name: '',
     email: '',
     phone: '',
@@ -19,16 +20,13 @@
     e.preventDefault();
     submitting = true;
     errorMsg = '';
-    
+
     try {
-      await fetchAPI('/api/contact', {
-        method: 'POST',
-        body: JSON.stringify(form),
-      });
+      await api.submitContact(form);
       success = true;
       form = { name: '', email: '', phone: '', service_type: '', message: '' };
-    } catch (err: any) {
-      errorMsg = err.message || 'Terjadi kesalahan, coba lagi.';
+    } catch (err: unknown) {
+      errorMsg = err instanceof Error ? err.message : 'Terjadi kesalahan, coba lagi.';
     } finally {
       submitting = false;
     }
@@ -60,13 +58,13 @@
         <p>Isi formulir di bawah ini dan tim kami akan segera menghubungi Anda.</p>
 
         {#if success}
-          <div class="alert alert-success">
+          <div class="alert alert-success" role="status" aria-live="polite">
             ✅ Pesan berhasil dikirim! Kami akan segera menghubungi Anda.
           </div>
         {/if}
 
         {#if errorMsg}
-          <div class="alert alert-error">
+          <div class="alert alert-error" role="alert" aria-live="assertive">
             ❌ {errorMsg}
           </div>
         {/if}

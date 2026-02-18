@@ -4,6 +4,7 @@
 
   let scrolled = $state(false);
   let mobileOpen = $state(false);
+  let mobileMenuElement: HTMLElement | null = $state(null);
 
   const navLinks = [
     { href: '/', label: 'Beranda' },
@@ -14,43 +15,74 @@
     { href: '/contact', label: 'Kontak' },
   ];
 
-  // All pages have green headers — navbar text should be white when not scrolled
-
   onMount(() => {
+    let scrollTimeout: ReturnType<typeof setTimeout>;
+
     const onScroll = () => {
-      scrolled = window.scrollY > 50;
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        scrolled = window.scrollY > 50;
+      }, 10);
     };
-    window.addEventListener('scroll', onScroll);
+
+    window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(scrollTimeout);
+    };
   });
 
   function toggleMobile() {
     mobileOpen = !mobileOpen;
+    if (mobileOpen) {
+      // Trap focus when menu opens
+      setTimeout(() => {
+        mobileMenuElement?.querySelector('a')?.focus();
+      }, 100);
+    }
   }
 
   function closeMobile() {
     mobileOpen = false;
   }
+
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && mobileOpen) {
+      closeMobile();
+    }
+  }
 </script>
 
-<nav class="navbar" class:scrolled class:hero-nav={!scrolled} class:mobile-open={mobileOpen}>
+<svelte:window onkeydown={handleKeyDown} />
+
+<nav
+  class="navbar"
+  class:scrolled
+  class:hero-nav={!scrolled}
+  class:mobile-open={mobileOpen}
+  role="navigation"
+  aria-label="Main navigation"
+>
   <div class="nav-container">
     <div class="navbar-brand">
-      <a href="/">
+      <a href="/" aria-label="Jamnasindo home page">
         <img src="/images/logo-jamnasindoo.png" alt="Jamnasindo" class="logo-img" />
       </a>
     </div>
 
-    <div class="navbar-center" class:active={mobileOpen}>
+    <div class="navbar-center" class:active={mobileOpen} bind:this={mobileMenuElement} role="menubar">
       <ul class="navbar-menu">
         {#each navLinks as link}
           <li>
             <a
               href={link.href}
-              class:active={$page.url.pathname === link.href || 
+              class:active={$page.url.pathname === link.href ||
                 (link.href !== '/' && $page.url.pathname.startsWith(link.href))}
               onclick={closeMobile}
+              role="menuitem"
+              aria-current={$page.url.pathname === link.href ? 'page' : undefined}
             >
               {link.label}
             </a>
@@ -63,7 +95,15 @@
       <a href="/contact" class="navbar-cta">Konsultasi</a>
     </div>
 
-    <button class="navbar-toggle" class:open={mobileOpen} aria-label="Toggle menu" onclick={toggleMobile}>
+    <button
+      class="navbar-toggle"
+      class:open={mobileOpen}
+      aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+      aria-expanded={mobileOpen}
+      aria-controls="mobile-menu"
+      onclick={toggleMobile}
+      type="button"
+    >
       <span></span>
       <span></span>
       <span></span>
@@ -72,8 +112,7 @@
 </nav>
 
 {#if mobileOpen}
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="navbar-overlay" onclick={closeMobile} role="presentation"></div>
+  <div class="navbar-overlay" onclick={closeMobile} onkeydown={handleKeyDown} role="presentation" aria-hidden="true"></div>
 {/if}
 
 <style>
