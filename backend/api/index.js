@@ -12,12 +12,17 @@ try { const s = require('../src/config/db'); dbReady = s !== null; } catch (e) {
 
 // All 6 routes
 let svc, test, cli, art, gal, con;
+let auth, adminSvc, adminArt, adminTest;
 try { svc = require('../src/routes/services'); } catch (e) { initErrors.push('svc: ' + e.message); }
 try { test = require('../src/routes/testimonials'); } catch (e) { initErrors.push('test: ' + e.message); }
 try { cli = require('../src/routes/clients'); } catch (e) { initErrors.push('cli: ' + e.message); }
 try { art = require('../src/routes/articles'); } catch (e) { initErrors.push('art: ' + e.message); }
 try { gal = require('../src/routes/gallery'); } catch (e) { initErrors.push('gal: ' + e.message); }
 try { con = require('../src/routes/contact'); } catch (e) { initErrors.push('con: ' + e.message); }
+try { auth = require('../src/routes/auth'); } catch (e) { initErrors.push('auth: ' + e.message); }
+try { adminSvc = require('../src/routes/admin/services'); } catch (e) { initErrors.push('adminSvc: ' + e.message); }
+try { adminArt = require('../src/routes/admin/articles'); } catch (e) { initErrors.push('adminArt: ' + e.message); }
+try { adminTest = require('../src/routes/admin/testimonials'); } catch (e) { initErrors.push('adminTest: ' + e.message); }
 
 const { errorHandler, notFound } = require('../src/middleware/errorHandler');
 const logger = require('../src/config/logger');
@@ -91,6 +96,12 @@ if (cli) app.use('/api/clients', generalLimiter, cli);
 if (art) app.use('/api/articles', generalLimiter, art);
 if (gal) app.use('/api/gallery', generalLimiter, gal);
 if (con) app.use('/api/contact', contactLimiter, con);
+
+// Admin routes
+if (auth) app.use('/api/auth', generalLimiter, auth);
+if (adminSvc) app.use('/api/admin/services', generalLimiter, adminSvc);
+if (adminArt) app.use('/api/admin/articles', generalLimiter, adminArt);
+if (adminTest) app.use('/api/admin/testimonials', generalLimiter, adminTest);
 
 app.get('*', notFound);
 app.use(errorHandler);
