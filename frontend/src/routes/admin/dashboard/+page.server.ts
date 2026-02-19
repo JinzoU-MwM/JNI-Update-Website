@@ -1,15 +1,9 @@
 import { fetchAPI } from '$lib/api';
 
-export async function load({ locals }) {
-  // Check if user is authenticated (simplified check)
-  const token = locals.cookies?.get('admin_token');
-
-  if (!token) {
-    throw new Error('Unauthorized');
-  }
-
+export async function load() {
+  // Auth is handled client-side by the layout
+  // This just fetches stats data
   try {
-    // Fetch statistics from public API (would be better with admin-specific endpoints)
     const [services, articles, testimonials, clients] = await Promise.all([
       fetchAPI('/api/services'),
       fetchAPI('/api/articles?page=1&limit=1'),
@@ -25,7 +19,7 @@ export async function load({ locals }) {
         clients: clients.length
       }
     };
-  } catch (error) {
+  } catch (_error) {
     return {
       stats: {
         services: 0,
@@ -33,7 +27,7 @@ export async function load({ locals }) {
         testimonials: 0,
         clients: 0
       },
-      error: error instanceof Error ? error.message : 'Failed to load statistics'
+      error: 'Failed to load statistics'
     };
   }
 }
