@@ -6,102 +6,118 @@
   interface Testimonial {
     id: string;
     name: string;
+    role?: string;
+    company?: string;
     content: string;
     rating: number;
     is_active: boolean;
-    created_at: string;
   }
 
   let testimonials = $state<Testimonial[]>([]);
   let loading = $state(true);
   let error = $state('');
+  let searchQuery = $state('');
+  let filterStatus = $state<'all'|'active'|'inactive'>('all');
 
-  onMount(async () => {
-    await loadTestimonials();
+  $: filtered = testimonials.filter(t => {
+    const matchSearch = t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.content.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchStatus = filterStatus === 'all' || (filterStatus === 'active' && t.is_active) || (filterStatus === 'inactive' && !t.is_active);
+    return matchSearch && matchStatus;
   });
 
-  async function loadTestimonials() {
-    loading = true;
-    error = '';
+  onMount(async () => { await load(); });
 
+  async function load() {
+    loading = true; error = '';
     try {
-      const response = await fetch('https://backend-nine-dun-99.vercel.app/api/testimonials');
-      if (!response.ok) throw new Error('Failed to fetch testimonials');
-
-      const data = await response.json();
-      testimonials = data;
+      const res = await fetch('https://backend-nine-dun-99.vercel.app/api/testimonials');
+      if (!res.ok) throw new Error('Failed to fetch');
+      testimonials = await res.json();
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to load testimonials';
+      error = err instanceof Error ? err.message : 'Failed to load';
     } finally {
       loading = false;
     }
   }
 
-  async function toggleTestimonial(id: string, currentStatus: boolean) {
+  async function toggle(id: string, status: boolean) {
     try {
-      const response = await fetch(`https://backend-nine-dun-99.vercel.app/api/testimonials/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ is_active: !currentStatus })
-      });
-
-      if (!response.ok) throw new Error('Failed to update testimonial');
-
-      await loadTestimonials();
+      const res = await fetch(`https://backend-nine-dun-99.vercel.app/api/testimonials/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ is_active: !status }) });
+      if (!res.ok) throw new Error('Failed');
+      await load();
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to update testimonial');
+      alert(err instanceof Error ? err.message : 'Failed');
     }
   }
 </script>
 
-<svelte:head>
-  <title>Testimonials - Admin Dashboard</title>
-</svelte:head>
+<svelte:head><title>Testimonials - Admin</title></svelte:head>
 
-<div class="testimonials-page">
-  <div class="page-header">
-    <h1>Testimonials</h1>
-    <a href="/admin/testimonials/new" class="btn btn-primary">Add Testimonial</a>
+<div class="page">
+  <div class="header">
+    <div class="header-content">
+      <div class="header-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <div class="header-text">
+        <h1>Testimonials</h1>
+        <p>Client reviews and feedback</p>
+      </div>
+    </div>
+    <a href="/admin/testimonials/new" class="btn primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      <span>Add Testimonial</span>
+    </a>
   </div>
 
-  {#if error}
-    <ErrorMessage title="Error" message={error} onRetry={loadTestimonials} />
-  {:else if loading}
-    <div class="loading-grid">
-      {#each Array(6) as _}
-        <SkeletonCard height="150px" />
-      {/each}
+  {#if !loading && !error && testimonials.length > 0}
+    <div class="filters">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search..." bind:value={searchQuery} />
+      </div>
+      <div class="filter-btns">
+        <button class="fb" class:active={filterStatus==='all'} onclick={() => filterStatus='all'}>All</button>
+        <button class="fb" class:active={filterStatus==='active'} onclick={() => filterStatus='active'}>Active</button>
+        <button class="fb" class:active={filterStatus==='inactive'} onclick={() => filterStatus='inactive'}>Inactive</button>
+      </div>
+      <span class="count">{filtered.length}</span>
     </div>
+  {/if}
+
+  {#if error}
+    <ErrorMessage title="Error" message={error} onRetry={load} />
+  {:else if loading}
+    <div class="loading">{#each Array(4) as _}<SkeletonCard height="180px" />{/each}</div>
   {:else if testimonials.length === 0}
-    <div class="empty-state">
-      <div class="empty-icon">💬</div>
-      <h2>No Testimonials Yet</h2>
+    <div class="empty">
+      <div class="empty-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <h2>No Testimonials</h2>
       <p>Add client testimonials to showcase your services</p>
-      <a href="/admin/testimonials/new" class="btn btn-primary">Add Testimonial</a>
+      <a href="/admin/testimonials/new" class="btn primary">Add Testimonial</a>
     </div>
   {:else}
-    <div class="testimonials-grid">
-      {#each testimonials as testimonial}
-        <div class="testimonial-card">
-          <div class="testimonial-header">
-            <h3>{testimonial.name}</h3>
-            <span class="status-badge {testimonial.is_active ? 'active' : 'inactive'}">
-              {testimonial.is_active ? 'Active' : 'Inactive'}
-            </span>
+    <div class="grid">
+      {#each filtered as t}
+        <div class="card">
+          <div class="card-header">
+            <div class="avatar">{t.name.charAt(0)}</div>
+            <div class="info">
+              <strong>{t.name}</strong>
+              {#if t.role || t.company}<span>{t.role}{t.role && t.company ? ' at ' : ''}{t.company}</span>{/if}
+            </div>
+            <span class="status {t.is_active ? 'active' : 'inactive'}">{t.is_active ? 'Active' : 'Inactive'}</span>
           </div>
-          <p class="testimonial-content">"{testimonial.content}"</p>
-          <div class="testimonial-footer">
-            <span class="rating-badge">⭐ {testimonial.rating}/5</span>
-            <div class="testimonial-actions">
-              <a href={`/admin/testimonials/${testimonial.id}`} class="btn btn-sm">Edit</a>
-              <button
-                onclick={() => toggleTestimonial(testimonial.id, testimonial.is_active)}
-                class="btn btn-sm btn-toggle"
-              >
-                {testimonial.is_active ? 'Hide' : 'Show'}
-              </button>
+          <p class="content">"{t.content}"</p>
+          <div class="card-footer">
+            <div class="rating">{#each Array(5) as _, i}<span class:filled={i < t.rating}>★</span>{/each}</div>
+            <div class="actions">
+              <a href={`/admin/testimonials/${t.id}`} class="btn edit">Edit</a>
+              <button onclick={() => toggle(t.id, t.is_active)} class="btn toggle">{t.is_active ? 'Hide' : 'Show'}</button>
             </div>
           </div>
         </div>
@@ -111,170 +127,5 @@
 </div>
 
 <style>
-  .testimonials-page {
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-  }
-
-  .page-header h1 {
-    margin: 0;
-    color: var(--text-dark);
-  }
-
-  .loading-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    background: white;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-  }
-
-  .empty-icon {
-    font-size: 4rem;
-    margin-bottom: 20px;
-  }
-
-  .empty-state h2 {
-    margin: 0 0 10px 0;
-    color: var(--text-dark);
-  }
-
-  .empty-state p {
-    margin: 0 0 30px 0;
-    color: var(--text-light);
-  }
-
-  .testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 20px;
-  }
-
-  .testimonial-card {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    box-shadow: var(--shadow-md);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .testimonial-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .testimonial-header h3 {
-    margin: 0;
-    color: var(--text-dark);
-    font-size: var(--font-size-lg);
-  }
-
-  .status-badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: var(--font-size-xs);
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-
-  .status-badge.active {
-    background: #dcfce7;
-    color: #166534;
-  }
-
-  .status-badge.inactive {
-    background: #fee2e2;
-    color: #991b1b;
-  }
-
-  .testimonial-content {
-    margin: 0 0 20px 0;
-    color: var(--text-light);
-    line-height: 1.6;
-    font-style: italic;
-  }
-
-  .testimonial-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto;
-  }
-
-  .rating-badge {
-    background: #fef3c7;
-    color: #92400e;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-  }
-
-  .testimonial-actions {
-    display: flex;
-    gap: 8px;
-  }
-
-  .btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: var(--transition);
-  }
-
-  .btn-primary {
-    background: var(--primary);
-    color: white;
-  }
-
-  .btn-primary:hover {
-    background: var(--primary-dark);
-  }
-
-  .btn-sm {
-    padding: 6px 12px;
-    font-size: var(--font-size-xs);
-  }
-
-  .btn-toggle {
-    background: var(--bg-alt);
-    color: var(--text);
-  }
-
-  .btn-toggle:hover {
-    background: var(--border);
-  }
-
-  @media (max-width: 768px) {
-    .page-header {
-      flex-direction: column;
-      gap: 16px;
-      align-items: stretch;
-    }
-
-    .testimonials-grid {
-      grid-template-columns: 1fr;
-    }
-  }
+  .page{max-width:1200px;margin:0 auto}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}.header-content{display:flex;align-items:center;gap:16px}.header-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#fff3e0 0%,#ffe0b2 100%);color:#ef6c00;display:flex;align-items:center;justify-content:center}.header-text h1{margin:0;font-size:1.5rem;font-weight:700}.header-text p{margin:4px 0 0;color:var(--text-light);font-size:0.9rem}.filters{display:flex;align-items:center;gap:16px;background:white;padding:12px 18px;border-radius:12px;margin-bottom:20px;flex-wrap:wrap}.search{display:flex;align-items:center;gap:10px;flex:1;min-width:200px}.search svg{color:var(--text-light)}.search input{border:none;outline:none;font-size:0.9rem;width:100%}.filter-btns{display:flex;gap:6px}.fb{padding:6px 14px;border:none;border-radius:8px;background:transparent;color:var(--text-light);font-size:0.8rem;font-weight:600;cursor:pointer}.fb:hover{background:#f0f4f0}.fb.active{background:var(--primary);color:white}.count{font-size:0.75rem;color:var(--text-light);background:#f0f4f0;padding:4px 10px;border-radius:20px}.loading{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:16px}.empty{text-align:center;padding:60px 20px;background:white;border-radius:20px}.empty-icon{width:100px;height:100px;margin:0 auto 24px;border-radius:50%;background:linear-gradient(135deg,#f0f4f0 0%,#e0e8e0 100%);display:flex;align-items:center;justify-content:center;color:var(--text-light)}.empty h2{margin:0 0 10px;font-size:1.25rem}.empty p{margin:0 0 28px;color:var(--text-light)}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:16px}.card{background:white;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.06);transition:all 0.3s}.card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.1)}.card-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}.avatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--primary),#2d6a37);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem}.info{flex:1;display:flex;flex-direction:column}.info strong{font-size:1rem;color:var(--text-dark)}.info span{font-size:0.75rem;color:var(--text-light)}.status{padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600}.status.active{background:rgba(56,124,68,0.1);color:var(--primary)}.status.inactive{background:rgba(239,68,68,0.1);color:#ef4444}.content{margin:0 0 16px;color:var(--text-light);font-style:italic;line-height:1.6;font-size:0.9rem}.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:1px solid rgba(0,0,0,0.06)}.rating span{color:#d1d5db;font-size:1rem}.rating span.filled{color:#fbbf24}.actions{display:flex;gap:8px}.btn{padding:8px 14px;border:none;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.2s}.btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;box-shadow:0 4px 12px rgba(56,124,68,0.25)}.btn.edit{background:#f8faf8;color:var(--text);border:1px solid rgba(0,0,0,0.06)}.btn.edit:hover{border-color:var(--primary);color:var(--primary)}.btn.toggle{background:rgba(56,124,68,0.08);color:var(--primary)}.btn.toggle:hover{background:rgba(56,124,68,0.15)}@media(max-width:768px){.header{flex-direction:column;gap:20px}.grid{grid-template-columns:1fr}.filters{flex-direction:column;align-items:stretch}.filter-btns{justify-content:center}}
 </style>
