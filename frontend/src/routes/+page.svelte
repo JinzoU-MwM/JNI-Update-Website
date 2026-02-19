@@ -123,7 +123,7 @@
       </div>
     </div>
 
-    {#if testimonials.length > 3}
+    {#if data.testimonials.length > 3}
       <div class="marquee-row">
         <div class="marquee-track scroll-left">
           {#each row2 as t}
