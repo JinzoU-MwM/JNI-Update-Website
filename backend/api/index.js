@@ -160,7 +160,7 @@ if (adminTest) app.use('/api/admin/testimonials', generalLimiter, adminTest);
 app.get('*', notFound);
 app.use(errorHandler);
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
     app.listen(process.env.PORT || 5000, () => console.log('🚀 Running'));
 }
 
