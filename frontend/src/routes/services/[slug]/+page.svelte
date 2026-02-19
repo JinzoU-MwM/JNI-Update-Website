@@ -1,11 +1,10 @@
 <script lang="ts">
   let { data } = $props();
-  const { service } = data;
 </script>
 
 <svelte:head>
-  <title>{service.title} - Jamnasindo</title>
-  <meta name="description" content={service.short_description} />
+  <title>{data.service.title} - Jamnasindo</title>
+  <meta name="description" content={data.service.short_description} />
 </svelte:head>
 
 <!-- Hero -->
@@ -15,11 +14,11 @@
       {#if service.icon_svg}
         {@html service.icon_svg}
       {:else if service.image_url}
-        <img src={service.image_url} alt={service.title} style="width:4rem;height:4rem;object-fit:contain;border-radius:50%;" />
+        <img src={data.service.image_url} alt={data.service.title} style="width:4rem;height:4rem;object-fit:contain;border-radius:50%;" />
       {/if}
     </div>
-    <h1>{service.title}</h1>
-    <p>{service.short_description}</p>
+    <h1>{data.service.title}</h1>
+    <p>{data.service.short_description}</p>
   </div>
 </header>
 

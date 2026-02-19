@@ -1,29 +1,32 @@
 <script lang="ts">
   let { data } = $props();
-  const { article } = data;
 
-  const formattedDate = article.created_at
-    ? new Date(article.created_at).toLocaleDateString('id-ID', {
-        year: 'numeric', month: 'long', day: 'numeric'
-      })
-    : '';
+  const formattedDate = $derived(
+    data.article.created_at
+      ? new Date(data.article.created_at).toLocaleDateString('id-ID', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      : ''
+  );
 </script>
 
 <svelte:head>
-  <title>{article.meta_title || article.title} - Jamnasindo</title>
-  <meta name="description" content={article.meta_description || article.excerpt} />
+  <title>{data.article.meta_title || article.title} - Jamnasindo</title>
+  <meta name="description" content={data.article.meta_description || article.excerpt} />
 </svelte:head>
 
 <section class="page-header">
   <div class="container">
-    <span class="article-category-badge">{article.category}</span>
-    <h1>{article.title}</h1>
+    <span class="article-category-badge">{data.article.category}</span>
+    <h1>{data.article.title}</h1>
     <div class="article-header-meta">
-      <span>{article.author}</span>
+      <span>{data.article.author}</span>
       <span>•</span>
       <span>{formattedDate}</span>
       <span>•</span>
-      <span>{article.read_time}</span>
+      <span>{data.article.read_time}</span>
     </div>
   </div>
 </section>
@@ -34,7 +37,7 @@
       <article class="article-content">
         {#if article.image_url}
           <div class="article-hero-image">
-            <img src={article.image_url} alt={article.title} />
+            <img src={data.article.image_url} alt={data.article.title} />
           </div>
         {/if}
         <div class="prose">{@html article.content}</div>

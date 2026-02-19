@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const supabase = require('../config/db');
 const { AppError } = require('../middleware/errorHandler');
-const { JWT_SECRET } = require('../middleware/auth');
+const { JWT_SECRET, ensureJwtSecret } = require('../middleware/auth');
 const logger = require('../config/logger');
 
 const router = express.Router();
@@ -22,6 +22,7 @@ const loginLimiter = rateLimit({
 // POST /api/auth/login - Admin login
 router.post('/login', loginLimiter, async (req, res, next) => {
   try {
+    ensureJwtSecret();
     const { email, password } = req.body;
 
     // Validate input
@@ -83,6 +84,7 @@ router.post('/login', loginLimiter, async (req, res, next) => {
 // POST /api/auth/verify - Verify token
 router.post('/verify', (req, res, next) => {
   try {
+    ensureJwtSecret();
     const { token } = req.body;
 
     if (!token) {

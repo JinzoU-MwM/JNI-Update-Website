@@ -4,15 +4,14 @@
   import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 
   let { data } = $props();
-  const { services = [], testimonials = [], clients = [], error } = data;
 
   // Duplicate testimonials for seamless marquee
-  const row1 = [...testimonials, ...testimonials];
-  const row2 = [...testimonials.slice().reverse(), ...testimonials.slice().reverse()];
+  const row1 = $derived([...data.testimonials, ...data.testimonials]);
+  const row2 = $derived([...data.testimonials.slice().reverse(), ...data.testimonials.slice().reverse()]);
 
   // Duplicate clients for marquee
-  const clientRow1 = [...clients, ...clients];
-  const clientRow2 = [...clients, ...clients].reverse();
+  const clientRow1 = $derived([...data.clients, ...data.clients]);
+  const clientRow2 = $derived([...data.clients, ...data.clients].reverse());
 </script>
 
 <svelte:head>
@@ -71,7 +70,7 @@
           {/each}
         </div>
       {:else}
-        {#each services as service}
+        {#each data.services as service}
           <a href="/services/{service.slug}" class="service-card">
             <div class="service-icon">
               {#if service.icon_svg}
@@ -89,7 +88,7 @@
     </div>
 
     {#if error}
-      <ErrorMessage title="Gagal memuat layanan" message={error} />
+      <ErrorMessage title="Gagal memuat layanan" message={data.error} />
     {/if}
   </div>
 </section>

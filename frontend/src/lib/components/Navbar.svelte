@@ -62,7 +62,6 @@
   class:scrolled
   class:hero-nav={!scrolled}
   class:mobile-open={mobileOpen}
-  role="navigation"
   aria-label="Main navigation"
 >
   <div class="nav-container">

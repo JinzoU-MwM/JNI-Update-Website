@@ -1,13 +1,24 @@
 const jwt = require('jsonwebtoken');
 const logger = require('../config/logger');
 
-if (!process.env.JWT_SECRET) {
-  throw new Error('FATAL: JWT_SECRET environment variable is not set');
-}
 const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET environment variable is not set');
+}
+
+// Helper to check JWT_SECRET availability
+const ensureJwtSecret = () => {
+  if (!JWT_SECRET) {
+    const error = new Error('Server configuration error: JWT_SECRET not set');
+    error.statusCode = 500;
+    error.errorCode = 'SERVER_CONFIG_ERROR';
+    throw error;
+  }
+};
 
 const authMiddleware = (req, res, next) => {
   try {
+    ensureJwtSecret();
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -44,4 +55,4 @@ const optionalAuth = (req, res, next) => {
   }
 };
 
-module.exports = { authMiddleware, optionalAuth, JWT_SECRET };
+module.exports = { authMiddleware, optionalAuth, JWT_SECRET, ensureJwtSecret };

@@ -219,7 +219,7 @@
       transition: transform 0.3s ease;
     }
 
-    .admin-sidebar.open {
+    .admin-sidebar:global(.open) {
       transform: translateX(0);
     }
 

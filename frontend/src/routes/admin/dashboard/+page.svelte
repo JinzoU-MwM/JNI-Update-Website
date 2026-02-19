@@ -3,13 +3,12 @@
   import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 
   let { data } = $props();
-  const { stats, error } = data;
 </script>
 
 {#if error}
   <ErrorMessage
     title="Dashboard Error"
-    message={error}
+    message={data.error}
     onRetry={() => window.location.reload()}
   />
 {:else}
@@ -24,7 +23,7 @@
         <div class="stat-icon services">🛠️</div>
         <div class="stat-info">
           <h3>Services</h3>
-          <p class="stat-number">{stats.services}</p>
+          <p class="stat-number">{data.stats.services}</p>
         </div>
         <a href="/admin/services" class="stat-action">Manage →</a>
       </div>
@@ -33,7 +32,7 @@
         <div class="stat-icon articles">📝</div>
         <div class="stat-info">
           <h3>Articles</h3>
-          <p class="stat-number">{stats.articles}</p>
+          <p class="stat-number">{data.stats.articles}</p>
         </div>
         <a href="/admin/articles" class="stat-action">Manage →</a>
       </div>
@@ -42,7 +41,7 @@
         <div class="stat-icon testimonials">💬</div>
         <div class="stat-info">
           <h3>Testimonials</h3>
-          <p class="stat-number">{stats.testimonials}</p>
+          <p class="stat-number">{data.stats.testimonials}</p>
         </div>
         <a href="/admin/testimonials" class="stat-action">Manage →</a>
       </div>
@@ -51,7 +50,7 @@
         <div class="stat-icon clients">🏢</div>
         <div class="stat-info">
           <h3>Clients</h3>
-          <p class="stat-number">{stats.clients}</p>
+          <p class="stat-number">{data.stats.clients}</p>
         </div>
         <a href="/admin/clients" class="stat-action">Manage →</a>
       </div>

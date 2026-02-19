@@ -134,14 +134,6 @@ const generalLimiter = rateLimit({
   legacyHeaders: false
 });
 
-const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: { error: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests' },
-  standardHeaders: true,
-  legacyHeaders: false
-});
-
 // Root redirect
 app.get('/', (req, res) => {
     res.redirect('/api');
