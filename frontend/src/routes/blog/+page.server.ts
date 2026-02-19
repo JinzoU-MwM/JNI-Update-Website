@@ -6,7 +6,7 @@ export async function load({ url }) {
         const category = url.searchParams.get('category') || undefined;
         const data = await fetchAPI(`/api/articles?page=${page}${category ? `&category=${category}` : ''}`);
         return { ...data, currentCategory: category || 'all' };
-    } catch (error) {
+    } catch (_error) {
         return { articles: [], pagination: { page: 1, total: 0, totalPages: 0 }, currentCategory: 'all' };
     }
 }

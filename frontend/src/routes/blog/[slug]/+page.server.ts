@@ -5,7 +5,7 @@ export async function load({ params }) {
     try {
         const article = await fetchAPI(`/api/articles/${params.slug}`);
         return { article };
-    } catch (err) {
+    } catch (_err) {
         throw error(404, 'Artikel tidak ditemukan');
     }
 }

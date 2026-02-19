@@ -11,9 +11,9 @@
 <header class="service-hero">
   <div class="container">
     <div class="service-icon-box">
-      {#if service.icon_svg}
-        {@html service.icon_svg}
-      {:else if service.image_url}
+      {#if data.service.icon_svg}
+        {@html data.service.icon_svg}
+      {:else if data.service.image_url}
         <img src={data.service.image_url} alt={data.service.title} style="width:4rem;height:4rem;object-fit:contain;border-radius:50%;" />
       {/if}
     </div>
@@ -26,27 +26,27 @@
   <div class="service-content-wrapper">
     <!-- Main Content -->
     <div class="main-content">
-      {#if service.full_description}
+      {#if data.service.full_description}
         <div class="content-section">
           <h2 class="section-title">Tentang Layanan</h2>
-          <div class="prose">{@html service.full_description}</div>
+          <div class="prose">{@html data.service.full_description}</div>
         </div>
       {/if}
 
-      {#if service.requirements}
+      {#if data.service.requirements}
         <div class="content-section">
           <h2 class="section-title">Persyaratan Dokumen</h2>
-          <div class="requirements-list">{@html service.requirements}</div>
+          <div class="requirements-list">{@html data.service.requirements}</div>
         </div>
       {/if}
 
-      {#if service.benefits}
+      {#if data.service.benefits}
         <div class="content-section">
           <h2 class="section-title">Keuntungan Layanan Kami</h2>
           <div class="benefit-grid">
             <div class="benefit-card">
               <div class="benefit-icon">✓</div>
-              <div class="prose">{@html service.benefits}</div>
+              <div class="prose">{@html data.service.benefits}</div>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@
       <div class="cta-card">
         <h3>Butuh Bantuan?</h3>
         <p>Konsultasikan kebutuhan legalitas Anda secara gratis bersama ahli kami.</p>
-        <a href="https://wa.me/6281234567890?text=Halo JNI, saya ingin konsultasi mengenai {encodeURIComponent(service.title)}" 
+        <a href="https://wa.me/6281234567890?text=Halo JNI, saya ingin konsultasi mengenai {encodeURIComponent(data.service.title)}" 
            class="btn-whatsapp" target="_blank">
           💬 Chat WhatsApp
         </a>

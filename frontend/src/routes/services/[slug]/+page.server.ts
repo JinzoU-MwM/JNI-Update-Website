@@ -5,7 +5,7 @@ export async function load({ params }) {
     try {
         const service = await fetchAPI(`/api/services/${params.slug}`);
         return { service };
-    } catch (err) {
+    } catch (_err) {
         throw error(404, 'Layanan tidak ditemukan');
     }
 }

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import ErrorMessage from '$lib/components/ErrorMessage.svelte';
   import SkeletonCard from '$lib/components/SkeletonCard.svelte';
 
   interface Message {
@@ -28,7 +27,7 @@
     try {
       // This would need a protected admin endpoint to fetch all messages
       // For now, using a placeholder approach
-      const response = await fetch('https://backend-nine-dun-99.vercel.app/api/contact', {
+      await fetch('https://backend-nine-dun-99.vercel.app/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -45,7 +44,7 @@
       // Since we can't fetch messages without proper auth, show placeholder
       messages = [];
       error = 'Contact messages endpoint needs authentication. This will be implemented in the next phase.';
-    } catch (err) {
+    } catch (_err) {
       error = 'Messages functionality requires admin authentication. Please set up the admin_users table in Supabase first.';
     } finally {
       loading = false;

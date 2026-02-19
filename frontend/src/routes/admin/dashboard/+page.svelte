@@ -5,7 +5,7 @@
   let { data } = $props();
 </script>
 
-{#if error}
+{#if data.error}
   <ErrorMessage
     title="Dashboard Error"
     message={data.error}

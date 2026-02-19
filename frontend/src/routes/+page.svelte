@@ -1,6 +1,5 @@
 <script lang="ts">
   import SkeletonCard from '$lib/components/SkeletonCard.svelte';
-  import SkeletonText from '$lib/components/SkeletonText.svelte';
   import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 
   let { data } = $props();
@@ -12,6 +11,17 @@
   // Duplicate clients for marquee
   const clientRow1 = $derived([...data.clients, ...data.clients]);
   const clientRow2 = $derived([...data.clients, ...data.clients].reverse());
+
+  // Handle broken images
+  function handleImageError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
+  }
+
+  function handleAvatarError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    img.src = '/images/placeholder-avatar.png';
+  }
 </script>
 
 <svelte:head>
@@ -112,7 +122,7 @@
             <div class="stars">{'★'.repeat(t.rating)}</div>
             <p class="review-text">"{t.review_text}"</p>
             <div class="client-info">
-              <img src={t.photo_url} alt={t.client_name} class="client-avatar" />
+              <img src={t.photo_url} alt={t.client_name} class="client-avatar" onerror={handleAvatarError} />
               <div>
                 <div class="client-name">{t.client_name}</div>
                 <div class="client-role">{t.client_role}</div>
@@ -131,7 +141,7 @@
               <div class="stars">{'★'.repeat(t.rating)}</div>
               <p class="review-text">"{t.review_text}"</p>
               <div class="client-info">
-                <img src={t.photo_url} alt={t.client_name} class="client-avatar" />
+                <img src={t.photo_url} alt={t.client_name} class="client-avatar" onerror={handleAvatarError} />
                 <div>
                   <div class="client-name">{t.client_name}</div>
                   <div class="client-role">{t.client_role}</div>
@@ -162,7 +172,7 @@
       <div class="marquee-track scroll-right">
         {#each clientRow1 as client}
           <div class="marquee-logo">
-            <img src={client.logo_path} alt={client.client_name} />
+            <img src={client.logo_path} alt={client.client_name} onerror={handleImageError} />
           </div>
         {/each}
       </div>
@@ -171,7 +181,7 @@
       <div class="marquee-track scroll-left">
         {#each clientRow2 as client}
           <div class="marquee-logo">
-            <img src={client.logo_path} alt={client.client_name} />
+            <img src={client.logo_path} alt={client.client_name} onerror={handleImageError} />
           </div>
         {/each}
       </div>

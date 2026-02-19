@@ -12,6 +12,7 @@ declare global {
 			error?: App.Error;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 		interface Platform {
 			// Add platform-specific types if needed
 		}

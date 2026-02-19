@@ -13,8 +13,8 @@
 </script>
 
 <svelte:head>
-  <title>{data.article.meta_title || article.title} - Jamnasindo</title>
-  <meta name="description" content={data.article.meta_description || article.excerpt} />
+  <title>{data.article.meta_title || data.article.title} - Jamnasindo</title>
+  <meta name="description" content={data.article.meta_description || data.article.excerpt} />
 </svelte:head>
 
 <section class="page-header">
@@ -35,12 +35,12 @@
   <div class="container">
     <div class="article-content-wrapper">
       <article class="article-content">
-        {#if article.image_url}
+        {#if data.article.image_url}
           <div class="article-hero-image">
             <img src={data.article.image_url} alt={data.article.title} />
           </div>
         {/if}
-        <div class="prose">{@html article.content}</div>
+        <div class="prose">{@html data.article.content}</div>
       </article>
 
       <aside class="article-sidebar">

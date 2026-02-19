@@ -9,7 +9,7 @@
 </script>
 
 <div class="skeleton-text">
-  {#each Array(lines) as _, i}
+  {#each Array(lines) as _, _i}
     <div class="skeleton-line" style="height: {height}; width: {width};"></div>
   {/each}
 </div>
