@@ -6,6 +6,18 @@ try { require('dotenv').config(); } catch (e) { /* ignore */ }
 
 const initErrors = [];
 
+// Critical env validation - fail fast in production
+const requiredEnvVars = ['JWT_SECRET'];
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    const msg = `FATAL: ${envVar} environment variable is not set`;
+    console.error(msg);
+    if (process.env.NODE_ENV === 'production') {
+      initErrors.push(msg);
+    }
+  }
+}
+
 // DB
 let dbReady = false;
 try { const s = require('../src/config/db'); dbReady = s !== null; } catch (e) { initErrors.push('db: ' + e.message); }
@@ -32,27 +44,58 @@ const app = express();
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: false,
-  crossOriginEmbedderPolicy: false
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      frameAncestors: ["'none'"],
+      formAction: ["'self'"]
+    }
+  },
+  crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: true,
+  crossOriginResourcePolicy: { policy: "same-origin" },
+  dnsPrefetchControl: { allow: false },
+  frameguard: { action: 'deny' },
+  hidePoweredBy: true,
+  hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+  ieNoOpen: true,
+  noSniff: true,
+  originAgentCluster: true,
+  permittedCrossDomainPolicies: { permittedPolicies: "none" },
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  xssFilter: true
 }));
 
-// CORS - Restrict to allowed origins
+// CORS - Strict origin validation for security
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
-  : ['http://localhost:5173', 'https://jni-consultant.vercel.app'];
+  : ['http://localhost:5173', 'http://localhost:4173', 'https://jni-consultant.vercel.app'];
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+    const isDev = process.env.NODE_ENV !== 'production';
+    
+    // In development, allow requests without origin (Postman, curl) or from any localhost
+    if (isDev && (!origin || origin.includes('localhost'))) {
+      return callback(null, true);
+    }
+    
+    // In production, strict origin check
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      logger.warn('CORS blocked request from:', { origin });
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['RateLimit-Limit', 'RateLimit-Remaining', 'RateLimit-Reset'],
+  maxAge: 600
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: '10mb' }));
 
@@ -69,6 +112,23 @@ app.use((req, res, next) => {
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
+  message: { error: 'RATE_LIMIT_EXCEEDED', message: 'Too many contact requests, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  skipSuccessfulRequests: true,
+  message: { error: 'RATE_LIMIT_EXCEEDED', message: 'Too many login attempts, please try again in 15 minutes' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: { error: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests' },
   standardHeaders: true,
   legacyHeaders: false

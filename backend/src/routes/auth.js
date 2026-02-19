@@ -1,20 +1,28 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 const supabase = require('../config/db');
-const { validate, contactSchema } = require('../middleware/validation');
 const { AppError } = require('../middleware/errorHandler');
 const { JWT_SECRET } = require('../middleware/auth');
 const logger = require('../config/logger');
 
 const router = express.Router();
 
+// Strict rate limiter for login - prevents brute force
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  skipSuccessfulRequests: true,
+  message: { error: 'RATE_LIMIT_EXCEEDED', message: 'Too many login attempts, please try again in 15 minutes' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 // POST /api/auth/login - Admin login
-router.post('/login', async (req, res, next) => {
+router.post('/login', loginLimiter, async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
-    console.log('Login attempt:', { email, passwordLength: password?.length });
 
     // Validate input
     if (!email || !password) {
@@ -29,7 +37,6 @@ router.post('/login', async (req, res, next) => {
       .eq('is_active', true)
       .single();
 
-    console.log('Admin user found:', !!admin, 'Error:', error);
 
     if (error || !admin) {
       logger.warn('Login attempt with invalid email:', { email });
@@ -37,10 +44,7 @@ router.post('/login', async (req, res, next) => {
     }
 
     // Verify password
-    console.log('Comparing passwords...');
     const isValidPassword = await bcrypt.compare(password, admin.password_hash);
-
-    console.log('Password valid:', isValidPassword);
 
     if (!isValidPassword) {
       logger.warn('Login attempt with invalid password:', { email });
@@ -72,7 +76,6 @@ router.post('/login', async (req, res, next) => {
       }
     });
   } catch (error) {
-    console.error('Auth error:', error);
     next(error);
   }
 });
