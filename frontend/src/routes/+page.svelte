@@ -63,7 +63,7 @@
     </div>
 
     <div class="services-grid">
-      {#if services.length === 0}
+      {#if data.services.length === 0}
         <div class="loading-state">
           {#each Array(6) as _}
             <SkeletonCard height="280px" />
@@ -87,14 +87,14 @@
       {/if}
     </div>
 
-    {#if error}
+    {#if data.error}
       <ErrorMessage title="Gagal memuat layanan" message={data.error} />
     {/if}
   </div>
 </section>
 
 <!-- TESTIMONIALS SECTION -->
-{#if testimonials.length > 0}
+{#if data.testimonials.length > 0}
 <section class="section testimonials-section" style="background:var(--bg-light);">
   <div class="container">
     <div class="section-header">
@@ -147,7 +147,7 @@
 {/if}
 
 <!-- CLIENTS SECTION -->
-{#if clients.length > 0}
+{#if data.clients.length > 0}
 <section class="section clients-section">
   <div class="container">
     <div class="section-header">
