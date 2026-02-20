@@ -3,7 +3,8 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
-.claude/
+.claude
+.serena
 
 # Environment secrets
 backend/.env
