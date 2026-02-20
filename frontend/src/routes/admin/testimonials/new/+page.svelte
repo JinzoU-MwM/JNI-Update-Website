@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { adminPost } from '$lib/api/admin';
 
   let form = $state({ name: '', role: '', company: '', content: '', rating: 5, is_active: true });
   let loading = $state(false);
@@ -10,7 +11,7 @@
     loading = true;
     error = '';
     try {
-      const res = await fetch('https://backend-nine-dun-99.vercel.app/api/testimonials', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+      const res = await adminPost('/testimonials', form);
       if (!res.ok) throw new Error('Failed to create testimonial');
       goto('/admin/testimonials');
     } catch (err) {

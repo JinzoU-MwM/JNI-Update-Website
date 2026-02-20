@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { adminGet, adminPut } from '$lib/api/admin';
   import SkeletonCard from '$lib/components/SkeletonCard.svelte';
   import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 
@@ -19,18 +20,18 @@
   let searchQuery = $state('');
   let filterStatus = $state<'all'|'active'|'inactive'>('all');
 
-  $: filtered = testimonials.filter(t => {
-    const matchSearch = t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.content.toLowerCase().includes(searchQuery.toLowerCase());
+  let filtered = $derived(testimonials.filter(t => {
+    const matchSearch = (t.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || (t.content || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchStatus = filterStatus === 'all' || (filterStatus === 'active' && t.is_active) || (filterStatus === 'inactive' && !t.is_active);
     return matchSearch && matchStatus;
-  });
+  }));
 
   onMount(async () => { await load(); });
 
   async function load() {
     loading = true; error = '';
     try {
-      const res = await fetch('https://backend-nine-dun-99.vercel.app/api/testimonials');
+      const res = await adminGet('/testimonials');
       if (!res.ok) throw new Error('Failed to fetch');
       testimonials = await res.json();
     } catch (err) {
@@ -42,7 +43,7 @@
 
   async function toggle(id: string, status: boolean) {
     try {
-      const res = await fetch(`https://backend-nine-dun-99.vercel.app/api/testimonials/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ is_active: !status }) });
+      const res = await adminPut(`/testimonials/${id}`, { is_active: !status });
       if (!res.ok) throw new Error('Failed');
       await load();
     } catch (err) {

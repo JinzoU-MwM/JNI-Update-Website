@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import { adminGet, adminPut } from '$lib/api/admin';
 
   interface FormData {
     title: string;
@@ -22,7 +23,7 @@
 
   onMount(async () => {
     try {
-      const res = await fetch(`https://backend-nine-dun-99.vercel.app/api/services/${serviceId}`);
+      const res = await adminGet(`/services/${serviceId}`);
       if (!res.ok) throw new Error('Failed to load service');
       const data = await res.json();
       form = { title: data.title, short_description: data.short_description, full_description: data.full_description || '', icon_name: data.icon_name || '', display_order: data.display_order || 0, is_active: data.is_active };
@@ -38,7 +39,7 @@
     saving = true;
     error = '';
     try {
-      const res = await fetch(`https://backend-nine-dun-99.vercel.app/api/services/${serviceId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+      const res = await adminPut(`/services/${serviceId}`, form);
       if (!res.ok) throw new Error('Failed to update service');
       goto('/admin/services');
     } catch (err) {

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { adminGet, adminPut } from '$lib/api/admin';
   import SkeletonCard from '$lib/components/SkeletonCard.svelte';
   import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 
@@ -16,7 +17,7 @@
   let error = $state('');
   let searchQuery = $state('');
 
-  $: filteredClients = clients.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  let filteredClients = $derived(clients.filter(c => (c.name || '').toLowerCase().includes(searchQuery.toLowerCase())));
 
   onMount(async () => { await loadClients(); });
 
@@ -24,7 +25,7 @@
     loading = true;
     error = '';
     try {
-      const response = await fetch('https://backend-nine-dun-99.vercel.app/api/clients');
+      const response = await adminGet('/clients');
       if (!response.ok) throw new Error('Failed to fetch clients');
       clients = await response.json();
     } catch (err) {
@@ -36,11 +37,7 @@
 
   async function toggleClient(id: string, currentStatus: boolean) {
     try {
-      const response = await fetch(`https://backend-nine-dun-99.vercel.app/api/clients/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_active: !currentStatus })
-      });
+      const response = await adminPut(`/clients/${id}`, { is_active: !currentStatus });
       if (!response.ok) throw new Error('Failed to update client');
       await loadClients();
     } catch (err) {

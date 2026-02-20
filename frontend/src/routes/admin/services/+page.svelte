@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { adminGet, adminPut } from '$lib/api/admin';
   import SkeletonCard from '$lib/components/SkeletonCard.svelte';
   import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 
@@ -16,10 +17,10 @@
   let error = $state('');
   let searchQuery = $state('');
 
-  $: filteredServices = services.filter(service =>
-    service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    service.short_description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  let filteredServices = $derived(services.filter(service =>
+    (service.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (service.short_description || '').toLowerCase().includes(searchQuery.toLowerCase())
+  ));
 
   onMount(async () => {
     await loadServices();
@@ -30,7 +31,7 @@
     error = '';
 
     try {
-      const response = await fetch('https://backend-nine-dun-99.vercel.app/api/services');
+      const response = await adminGet('/services');
       if (!response.ok) throw new Error('Failed to fetch services');
 
       const data = await response.json();
@@ -44,13 +45,7 @@
 
   async function toggleService(id: string, currentStatus: boolean) {
     try {
-      const response = await fetch(`https://backend-nine-dun-99.vercel.app/api/services/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ is_active: !currentStatus })
-      });
+      const response = await adminPut(`/services/${id}`, { is_active: !currentStatus });
 
       if (!response.ok) throw new Error('Failed to update service');
 

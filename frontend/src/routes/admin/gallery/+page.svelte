@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { adminGet, adminDelete } from '$lib/api/admin';
   import SkeletonCard from '$lib/components/SkeletonCard.svelte';
   import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 
@@ -16,9 +17,9 @@
   async function load() {
     loading = true; error = '';
     try {
-      let url = 'https://backend-nine-dun-99.vercel.app/api/gallery';
-      if (selected !== 'all') url += `?category=${encodeURIComponent(selected)}`;
-      const res = await fetch(url);
+      let endpoint = '/gallery';
+      if (selected !== 'all') endpoint += `?category=${encodeURIComponent(selected)}`;
+      const res = await adminGet(endpoint);
       if (!res.ok) throw new Error('Failed');
       const data = await res.json();
       gallery = data.items || [];
@@ -35,7 +36,7 @@
   async function deleteItem(id: string) {
     if (!confirm('Delete this photo?')) return;
     try {
-      const res = await fetch(`https://backend-nine-dun-99.vercel.app/api/gallery/${id}`, { method: 'DELETE' });
+      const res = await adminDelete(`/gallery/${id}`);
       if (!res.ok) throw new Error('Failed');
       await load();
     } catch (err) {

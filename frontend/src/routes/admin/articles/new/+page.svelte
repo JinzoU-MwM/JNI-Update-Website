@@ -1,5 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { adminPost, adminUploadFile } from '$lib/api/admin';
+  import RichEditor from '$lib/components/RichEditor.svelte';
 
   interface FormData {
     title: string;
@@ -23,6 +25,9 @@
 
   let loading = $state(false);
   let error = $state('');
+  let selectedFile: File | null = $state(null);
+  let preview = $state('');
+  let uploadProgress = $state('');
 
   const categories = [
     'Business Strategy',
@@ -34,19 +39,29 @@
     'Other'
   ];
 
+  function handleFileSelect(e: Event) {
+    const input = e.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      selectedFile = input.files[0];
+      preview = URL.createObjectURL(input.files[0]);
+    }
+  }
+
   async function handleSubmit(e: Event) {
     e.preventDefault();
     loading = true;
     error = '';
+    uploadProgress = '';
 
     try {
-      const response = await fetch('https://backend-nine-dun-99.vercel.app/api/articles', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(form)
-      });
+      if (selectedFile) {
+        uploadProgress = 'Uploading image...';
+        const result = await adminUploadFile(selectedFile, 'articles');
+        form.featured_image_url = result.path;
+        uploadProgress = 'Saving article...';
+      }
+
+      const response = await adminPost('/articles', form);
 
       if (!response.ok) {
         const data = await response.json();
@@ -58,6 +73,7 @@
       error = err instanceof Error ? err.message : 'Failed to create article';
     } finally {
       loading = false;
+      uploadProgress = '';
     }
   }
 
@@ -95,6 +111,13 @@
     </div>
   {/if}
 
+  {#if uploadProgress}
+    <div class="alert alert-info">
+      <div class="spinner"></div>
+      <span>{uploadProgress}</span>
+    </div>
+  {/if}
+
   <form onsubmit={handleSubmit} class="editor-form">
     <div class="form-main">
       <div class="form-group">
@@ -121,15 +144,8 @@
       </div>
 
       <div class="form-group">
-        <label for="content">Content *</label>
-        <textarea
-          id="content"
-          bind:value={form.content}
-          rows="15"
-          required
-          placeholder="Write your article content here... You can use basic HTML tags for formatting."
-        ></textarea>
-        <span class="field-hint">Supports basic HTML formatting (&lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;li&gt;, etc.)</span>
+        <label>Content *</label>
+        <RichEditor bind:value={form.content} onchange={(v) => form.content = v} />
       </div>
     </div>
 
@@ -168,7 +184,7 @@
 
       <div class="sidebar-card">
         <h3>Category</h3>
-        <div class="form-group">
+        <div class="form-group no-gap">
           <select bind:value={form.category} required>
             <option value="" disabled>Select a category</option>
             {#each categories as category}
@@ -180,7 +196,7 @@
 
       <div class="sidebar-card">
         <h3>Author</h3>
-        <div class="form-group">
+        <div class="form-group no-gap">
           <input
             type="text"
             bind:value={form.author}
@@ -192,17 +208,27 @@
 
       <div class="sidebar-card">
         <h3>Featured Image</h3>
-        <div class="form-group">
-          <input
-            type="url"
-            bind:value={form.featured_image_url}
-            placeholder="https://example.com/image.jpg"
-          />
-          <span class="field-hint">Enter the URL of the featured image</span>
+        <div class="file-upload-area">
+          <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" onchange={handleFileSelect} class="file-input" />
+          <div class="upload-placeholder">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <span>Click to upload image</span>
+            <small>JPEG, PNG, GIF, WebP (max 5MB)</small>
+          </div>
         </div>
-        {#if form.featured_image_url}
+        {#if selectedFile || form.featured_image_url}
           <div class="image-preview">
-            <img src={form.featured_image_url} alt="Preview" onerror="this.style.display='none'" />
+            <img src={preview || form.featured_image_url} alt="Preview" onerror={(e) => e.currentTarget.style.display='none'} />
+            <button type="button" class="remove-btn" onclick={() => { selectedFile = null; preview = ''; form.featured_image_url = ''; }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
           </div>
         {/if}
       </div>
@@ -268,6 +294,25 @@
     color: #dc2626;
   }
 
+  .alert-info {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #2563eb;
+  }
+
+  .alert-info .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #bfdbfe;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
   .editor-form {
     display: grid;
     grid-template-columns: 1fr 320px;
@@ -312,6 +357,10 @@
     gap: 8px;
   }
 
+  .form-group.no-gap {
+    gap: 0;
+  }
+
   .form-group label {
     font-weight: 600;
     font-size: 0.875rem;
@@ -342,7 +391,7 @@
 
   .form-group textarea {
     resize: vertical;
-    min-height: 120px;
+    min-height: 100px;
   }
 
   .form-group select {
@@ -433,9 +482,52 @@
     animation: spin 1s linear infinite;
   }
 
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+  /* File Upload */
+  .file-upload-area {
+    position: relative;
+    border: 2px dashed rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .file-upload-area:hover {
+    border-color: var(--primary);
+    background: rgba(56, 124, 68, 0.02);
+  }
+
+  .file-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    color: var(--text-light);
+    text-align: center;
+  }
+
+  .upload-placeholder svg {
+    margin-bottom: 8px;
+    color: var(--text-light);
+  }
+
+  .upload-placeholder span {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .upload-placeholder small {
+    font-size: 0.7rem;
+    margin-top: 4px;
   }
 
   .image-preview {
@@ -443,12 +535,34 @@
     border-radius: 10px;
     overflow: hidden;
     background: #f0f4f0;
+    position: relative;
   }
 
   .image-preview img {
     width: 100%;
     height: auto;
     display: block;
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .remove-btn:hover {
+    background: #ef4444;
   }
 
   @media (max-width: 1024px) {
@@ -458,10 +572,6 @@
 
     .form-sidebar {
       position: static;
-      order: -1;
-    }
-
-    .sidebar-card:first-child {
       order: -1;
     }
   }

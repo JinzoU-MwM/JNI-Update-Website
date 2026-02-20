@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { adminGet } from '$lib/api/admin';
   import SkeletonCard from '$lib/components/SkeletonCard.svelte';
 
   interface Message {
@@ -25,27 +26,14 @@
     error = '';
 
     try {
-      // This would need a protected admin endpoint to fetch all messages
-      // For now, using a placeholder approach
-      await fetch('https://backend-nine-dun-99.vercel.app/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: 'Admin Check',
-          email: 'admin@jni.com',
-          phone: '0000000000',
-          message: 'Admin access check',
-          service_type: 'system'
-        })
-      });
-
-      // Since we can't fetch messages without proper auth, show placeholder
-      messages = [];
-      error = 'Contact messages endpoint needs authentication. This will be implemented in the next phase.';
+      const response = await adminGet('/messages');
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || 'Failed to fetch messages');
+      }
+      messages = await response.json();
     } catch (_err) {
-      error = 'Messages functionality requires admin authentication. Please set up the admin_users table in Supabase first.';
+      error = _err instanceof Error ? _err.message : 'Messages functionality requires admin authentication.';
     } finally {
       loading = false;
     }

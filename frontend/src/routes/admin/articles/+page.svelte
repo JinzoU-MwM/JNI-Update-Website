@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { adminGet, adminPut } from '$lib/api/admin';
   import SkeletonCard from '$lib/components/SkeletonCard.svelte';
   import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 
@@ -18,14 +19,14 @@
   let searchQuery = $state('');
   let filterStatus = $state<'all' | 'published' | 'draft'>('all');
 
-  $: filteredArticles = articles.filter(article => {
+  let filteredArticles = $derived(articles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+      (article.excerpt || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' ||
       (filterStatus === 'published' && article.is_published) ||
       (filterStatus === 'draft' && !article.is_published);
     return matchesSearch && matchesStatus;
-  });
+  }));
 
   onMount(async () => {
     await loadArticles();
@@ -36,7 +37,7 @@
     error = '';
 
     try {
-      const response = await fetch('https://backend-nine-dun-99.vercel.app/api/articles?page=1&limit=50');
+      const response = await adminGet('/articles?page=1&limit=50');
       if (!response.ok) throw new Error('Failed to fetch articles');
 
       const data = await response.json();
@@ -50,13 +51,7 @@
 
   async function togglePublish(id: string, currentStatus: boolean) {
     try {
-      const response = await fetch(`https://backend-nine-dun-99.vercel.app/api/articles/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ is_published: !currentStatus })
-      });
+      const response = await adminPut(`/articles/${id}`, { is_published: !currentStatus });
 
       if (!response.ok) throw new Error('Failed to update article');
 

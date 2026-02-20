@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { adminPost } from '$lib/api/admin';
 
   interface FormData {
     title: string;
@@ -30,11 +31,7 @@
     error = '';
 
     try {
-      const response = await fetch('https://backend-nine-dun-99.vercel.app/api/services', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      });
+      const response = await adminPost('/services', form);
 
       if (!response.ok) {
         const data = await response.json();

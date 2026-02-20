@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import { adminGet, adminPut } from '$lib/api/admin';
 
   let form = $state({ name: '', role: '', company: '', content: '', rating: 5, is_active: false });
   let loading = $state(true);
@@ -11,7 +12,7 @@
 
   onMount(async () => {
     try {
-      const res = await fetch(`https://backend-nine-dun-99.vercel.app/api/testimonials/${id}`);
+      const res = await adminGet(`/testimonials/${id}`);
       if (!res.ok) throw new Error('Failed to load');
       const d = await res.json();
       form = { name: d.name, role: d.role || '', company: d.company || '', content: d.content, rating: d.rating, is_active: d.is_active };
@@ -27,7 +28,7 @@
     saving = true;
     error = '';
     try {
-      const res = await fetch(`https://backend-nine-dun-99.vercel.app/api/testimonials/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+      const res = await adminPut(`/testimonials/${id}`, form);
       if (!res.ok) throw new Error('Failed to update');
       goto('/admin/testimonials');
     } catch (err) {
