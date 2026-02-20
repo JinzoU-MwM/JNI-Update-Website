@@ -13,6 +13,10 @@ router.use(authMiddleware);
 // GET /api/admin/gallery - Get all gallery items
 router.get('/', async (req, res, next) => {
     try {
+        if (!supabase) {
+            throw new AppError('Database not connected', 503, 'DB_ERROR');
+        }
+
         let query = supabase
             .from('gallery')
             .select('*')
@@ -26,7 +30,7 @@ router.get('/', async (req, res, next) => {
 
         if (error) throw error;
 
-        const galleryItems = items.map(item => ({
+        const galleryItems = (items || []).map(item => ({
             ...item,
             image_url: getStorageUrl(item.image_url)
         }));
@@ -36,7 +40,7 @@ router.get('/', async (req, res, next) => {
             .from('gallery')
             .select('category');
 
-        const categories = ['all', ...new Set(allItems?.map(item => item.category) || [])];
+        const categories = ['all', ...new Set((allItems || []).map(item => item.category).filter(Boolean))];
 
         logger.info('Admin: Gallery fetched', { count: galleryItems.length });
 
@@ -52,6 +56,10 @@ router.get('/', async (req, res, next) => {
 // GET /api/admin/gallery/:id - Get single gallery item
 router.get('/:id', async (req, res, next) => {
     try {
+        if (!supabase) {
+            throw new AppError('Database not connected', 503, 'DB_ERROR');
+        }
+
         const { data, error } = await supabase
             .from('gallery')
             .select('*')
@@ -76,6 +84,10 @@ router.get('/:id', async (req, res, next) => {
 // POST /api/admin/gallery - Create new gallery item
 router.post('/', async (req, res, next) => {
     try {
+        if (!supabase) {
+            throw new AppError('Database not connected', 503, 'DB_ERROR');
+        }
+
         const galleryData = req.body;
 
         const { data, error } = await supabase
@@ -102,6 +114,10 @@ router.post('/', async (req, res, next) => {
 // DELETE /api/admin/gallery/:id - Delete gallery item
 router.delete('/:id', async (req, res, next) => {
     try {
+        if (!supabase) {
+            throw new AppError('Database not connected', 503, 'DB_ERROR');
+        }
+
         const { error } = await supabase
             .from('gallery')
             .delete()
