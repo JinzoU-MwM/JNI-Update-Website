@@ -3,6 +3,7 @@
   import Navbar from '$lib/components/Navbar.svelte';
   import Footer from '$lib/components/Footer.svelte';
   import WhatsAppFloat from '$lib/components/WhatsAppFloat.svelte';
+  import Toast from '$lib/components/Toast.svelte';
   import '$lib/styles/global.css';
 
   let { children } = $props();
@@ -27,4 +28,5 @@
   <Footer />
   <WhatsAppFloat />
 {/if}
+<Toast />
 
