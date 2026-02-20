@@ -5,7 +5,7 @@ const { generalLimiter, contactLimiter } = require('../middleware/rateLimiters')
  */
 let services, testimonials, clients, articles, gallery, contact;
 let auth, testRoute;
-let adminServices, adminArticles, adminTestimonials;
+let adminServices, adminArticles, adminTestimonials, adminClients, adminGallery, adminMessages, upload;
 
 const loadErrors = [];
 
@@ -71,6 +71,28 @@ try {
 } catch (e) {
   loadErrors.push('adminTestimonials: ' + e.message);
 }
+try {
+  adminClients = require('../routes/admin/clients');
+} catch (e) {
+  loadErrors.push('adminClients: ' + e.message);
+}
+try {
+  adminGallery = require('../routes/admin/gallery');
+} catch (e) {
+  loadErrors.push('adminGallery: ' + e.message);
+}
+try {
+  adminMessages = require('../routes/admin/messages');
+} catch (e) {
+  loadErrors.push('adminMessages: ' + e.message);
+}
+
+// Load upload route
+try {
+  upload = require('../routes/upload');
+} catch (e) {
+  loadErrors.push('upload: ' + e.message);
+}
 
 /**
  * Register all routes with the Express app
@@ -110,6 +132,10 @@ function registerRoutes(app, dbReady) {
   if (adminServices) app.use('/api/admin/services', generalLimiter, adminServices);
   if (adminArticles) app.use('/api/admin/articles', generalLimiter, adminArticles);
   if (adminTestimonials) app.use('/api/admin/testimonials', generalLimiter, adminTestimonials);
+  if (adminClients) app.use('/api/admin/clients', generalLimiter, adminClients);
+  if (adminGallery) app.use('/api/admin/gallery', generalLimiter, adminGallery);
+  if (adminMessages) app.use('/api/admin/messages', generalLimiter, adminMessages);
+  if (upload) app.use('/api/admin/upload', generalLimiter, upload);
 }
 
 module.exports = {
