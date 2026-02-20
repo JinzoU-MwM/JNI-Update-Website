@@ -32,7 +32,8 @@
     { href: '/admin/testimonials', icon: 'testimonials', label: 'Testimonials' },
     { href: '/admin/clients', icon: 'clients', label: 'Clients' },
     { href: '/admin/gallery', icon: 'gallery', label: 'Gallery' },
-    { href: '/admin/messages', icon: 'messages', label: 'Messages' }
+    { href: '/admin/messages', icon: 'messages', label: 'Messages' },
+    { href: '/admin/users', icon: 'users', label: 'Users' }
   ];
 </script>
 
@@ -125,6 +126,13 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                   <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              {:else if item.icon === 'users'}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
               {/if}
             </span>

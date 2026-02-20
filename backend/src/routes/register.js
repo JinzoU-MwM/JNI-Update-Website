@@ -5,7 +5,7 @@ const { generalLimiter, contactLimiter } = require('../middleware/rateLimiters')
  */
 let services, testimonials, clients, articles, gallery, contact;
 let auth, testRoute;
-let adminServices, adminArticles, adminTestimonials, adminClients, adminGallery, adminMessages, upload;
+let adminServices, adminArticles, adminTestimonials, adminClients, adminGallery, adminMessages, adminUsers, upload;
 
 const loadErrors = [];
 
@@ -86,6 +86,11 @@ try {
 } catch (e) {
   loadErrors.push('adminMessages: ' + e.message);
 }
+try {
+  adminUsers = require('../routes/admin/users');
+} catch (e) {
+  loadErrors.push('adminUsers: ' + e.message);
+}
 
 // Load upload route
 try {
@@ -135,6 +140,7 @@ function registerRoutes(app, dbReady) {
   if (adminClients) app.use('/api/admin/clients', generalLimiter, adminClients);
   if (adminGallery) app.use('/api/admin/gallery', generalLimiter, adminGallery);
   if (adminMessages) app.use('/api/admin/messages', generalLimiter, adminMessages);
+  if (adminUsers) app.use('/api/admin/users', generalLimiter, adminUsers);
   if (upload) app.use('/api/admin/upload', generalLimiter, upload);
 }
 
