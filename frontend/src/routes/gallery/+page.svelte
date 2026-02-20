@@ -5,6 +5,12 @@
 <svelte:head>
   <title>Galeri - Jamnasindo</title>
   <meta name="description" content="Galeri foto kegiatan dan dokumentasi layanan JNI Consultant." />
+  <link rel="canonical" href="https://jamnasindo.id/gallery" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jamnasindo.id/gallery" />
+  <meta property="og:title" content="Galeri - Jamnasindo" />
+  <meta property="og:description" content="Galeri foto kegiatan dan dokumentasi layanan JNI Consultant." />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <section class="page-header">
@@ -34,7 +40,7 @@
       <div class="gallery-grid">
         {#each data.items as item}
           <div class="gallery-item">
-            <img src={item.image_url} alt={item.title || 'Gallery'} />
+            <img src={item.image_url} alt={item.title || 'Gallery'} loading="lazy" />
             {#if item.title}
               <div class="gallery-overlay">
                 <span>{item.title}</span>

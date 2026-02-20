@@ -5,6 +5,12 @@
 <svelte:head>
   <title>Layanan Kami - Jamnasindo</title>
   <meta name="description" content="Layanan Konsultan JNI - Izin PPIU, PIHK, Kontraktor, VISA, Akreditasi IATA, Bank Garansi, dan Perpajakan." />
+  <link rel="canonical" href="https://jamnasindo.id/services" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jamnasindo.id/services" />
+  <meta property="og:title" content="Layanan Kami - Jamnasindo" />
+  <meta property="og:description" content="Layanan Konsultan JNI - Izin PPIU, PIHK, Kontraktor, VISA, Akreditasi IATA, Bank Garansi, dan Perpajakan." />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <section class="page-header">
@@ -32,7 +38,7 @@
             {#if service.icon_svg}
               {@html service.icon_svg}
             {:else if service.image_url}
-              <img src={service.image_url} alt={service.title} style="width:40px;height:40px;object-fit:contain;" />
+              <img src={service.image_url} alt={service.title} loading="lazy" style="width:40px;height:40px;object-fit:contain;" />
             {/if}
           </div>
           <h3>{service.title}</h3>

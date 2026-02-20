@@ -1,3 +1,15 @@
-# allow crawling everything by default
+# robots.txt for Jamnasindo (JNI Consultant)
+# https://jamnasindo.id
+
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemap location
+Sitemap: https://jamnasindo.id/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /admin/
+Disallow: /api/
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

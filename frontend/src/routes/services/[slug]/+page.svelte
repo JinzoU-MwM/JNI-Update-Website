@@ -1,11 +1,44 @@
 <script lang="ts">
+  import JsonLd from '$lib/components/JsonLd.svelte';
+
   let { data } = $props();
+
+  // Service structured data for SEO
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": data.service.title,
+    "description": data.service.short_description,
+    "url": `https://jamnasindo.id/services/${data.service.slug}`,
+    "provider": {
+      "@type": "ProfessionalService",
+      "name": "JNI Consultant - Jamnasindo",
+      "url": "https://jamnasindo.id"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Indonesia"
+    }
+  };
+
+  const canonicalUrl = `https://jamnasindo.id/services/${data.service.slug}`;
 </script>
 
 <svelte:head>
   <title>{data.service.title} - Jamnasindo</title>
   <meta name="description" content={data.service.short_description} />
+  <link rel="canonical" href={canonicalUrl} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:title" content="{data.service.title} - Jamnasindo" />
+  <meta property="og:description" content={data.service.short_description} />
+  {#if data.service.image_url}
+    <meta property="og:image" content={data.service.image_url} />
+  {/if}
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
+
+<JsonLd data={serviceSchema} />
 
 <!-- Hero -->
 <header class="service-hero">
@@ -14,7 +47,7 @@
       {#if data.service.icon_svg}
         {@html data.service.icon_svg}
       {:else if data.service.image_url}
-        <img src={data.service.image_url} alt={data.service.title} style="width:4rem;height:4rem;object-fit:contain;border-radius:50%;" />
+        <img src={data.service.image_url} alt={data.service.title} loading="lazy" style="width:4rem;height:4rem;object-fit:contain;border-radius:50%;" />
       {/if}
     </div>
     <h1>{data.service.title}</h1>

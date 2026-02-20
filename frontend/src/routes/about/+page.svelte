@@ -1,6 +1,12 @@
 <svelte:head>
   <title>Tentang Kami - Jamnasindo</title>
   <meta name="description" content="PT Jaminan Nasional Indonesia (JNI) adalah konsultan perizinan dan legalitas bisnis terpercaya dengan pengalaman lebih dari 10 tahun." />
+  <link rel="canonical" href="https://jamnasindo.id/about" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jamnasindo.id/about" />
+  <meta property="og:title" content="Tentang Kami - Jamnasindo" />
+  <meta property="og:description" content="PT Jaminan Nasional Indonesia (JNI) adalah konsultan perizinan dan legalitas bisnis terpercaya dengan pengalaman lebih dari 10 tahun." />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <section class="page-header">

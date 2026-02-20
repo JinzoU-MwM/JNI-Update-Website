@@ -36,6 +36,12 @@
 <svelte:head>
   <title>Hubungi Kami - Jamnasindo</title>
   <meta name="description" content="Hubungi JNI Consultant untuk konsultasi kebutuhan perizinan dan legalitas bisnis Anda." />
+  <link rel="canonical" href="https://jamnasindo.id/contact" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jamnasindo.id/contact" />
+  <meta property="og:title" content="Hubungi Kami - Jamnasindo" />
+  <meta property="og:description" content="Hubungi JNI Consultant untuk konsultasi kebutuhan perizinan dan legalitas bisnis Anda." />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <section class="page-header">

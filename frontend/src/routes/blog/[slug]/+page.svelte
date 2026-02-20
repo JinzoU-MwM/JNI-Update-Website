@@ -1,4 +1,6 @@
 <script lang="ts">
+  import JsonLd from '$lib/components/JsonLd.svelte';
+
   let { data } = $props();
 
   const formattedDate = $derived(
@@ -10,12 +12,89 @@
         })
       : ''
   );
+
+  const isoDate = $derived(
+    data.article.created_at
+      ? new Date(data.article.created_at).toISOString()
+      : new Date().toISOString()
+  );
+
+  const canonicalUrl = `https://jamnasindo.id/blog/${data.article.slug}`;
+
+  // Article structured data for SEO
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": data.article.title,
+    "description": data.article.meta_description || data.article.excerpt,
+    "image": data.article.image_url || "https://jamnasindo.id/images/hero-section.jpeg",
+    "datePublished": isoDate,
+    "dateModified": data.article.updated_at || isoDate,
+    "author": {
+      "@type": "Person",
+      "name": data.article.author || "JNI Consultant"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "JNI Consultant - Jamnasindo",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://jamnasindo.id/images/logo-jamnasindoo.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": canonicalUrl
+    }
+  };
+
+  // Breadcrumb structured data
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Beranda",
+        "item": "https://jamnasindo.id/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://jamnasindo.id/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": data.article.title
+      }
+    ]
+  };
 </script>
 
 <svelte:head>
   <title>{data.article.meta_title || data.article.title} - Jamnasindo</title>
   <meta name="description" content={data.article.meta_description || data.article.excerpt} />
+  <link rel="canonical" href={canonicalUrl} />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:title" content={data.article.meta_title || data.article.title} />
+  <meta property="og:description" content={data.article.meta_description || data.article.excerpt} />
+  {#if data.article.image_url}
+    <meta property="og:image" content={data.article.image_url} />
+  {/if}
+  <meta property="article:published_time" content={isoDate} />
+  <meta property="article:author" content={data.article.author || "JNI Consultant"} />
+  <meta property="article:section" content={data.article.category} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={data.article.meta_title || data.article.title} />
+  <meta name="twitter:description" content={data.article.meta_description || data.article.excerpt} />
 </svelte:head>
+
+<JsonLd data={articleSchema} />
+<JsonLd data={breadcrumbSchema} />
 
 <section class="page-header">
   <div class="container">
@@ -37,7 +116,7 @@
       <article class="article-content">
         {#if data.article.image_url}
           <div class="article-hero-image">
-            <img src={data.article.image_url} alt={data.article.title} />
+            <img src={data.article.image_url} alt={data.article.title} loading="lazy" />
           </div>
         {/if}
         <div class="prose">{@html data.article.content}</div>

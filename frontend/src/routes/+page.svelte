@@ -1,8 +1,43 @@
 <script lang="ts">
   import SkeletonCard from '$lib/components/SkeletonCard.svelte';
   import ErrorMessage from '$lib/components/ErrorMessage.svelte';
+  import JsonLd from '$lib/components/JsonLd.svelte';
 
   let { data } = $props();
+
+  // Organization structured data for SEO
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "JNI Consultant - Jamnasindo",
+    "description": "Konsultan Perizinan & Legalitas Bisnis Terpercaya di Indonesia",
+    "url": "https://jamnasindo.id",
+    "logo": "https://jamnasindo.id/images/logo-jamnasindoo.png",
+    "telephone": "+62 21 1234 5678",
+    "email": "admin@jamnasindo.id",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Jl. Condet Raya No 103E",
+      "addressLocality": "Kramatjati, Jakarta Timur",
+      "addressCountry": "ID"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "-6.2615",
+      "longitude": "106.8556"
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "17:00"
+    },
+    "sameAs": [
+      "https://wa.me/6281234567890"
+    ],
+    "priceRange": "$$",
+    "areaServed": "Indonesia"
+  };
 
   // Duplicate testimonials for seamless marquee
   const row1 = $derived([...data.testimonials, ...data.testimonials]);
@@ -27,7 +62,16 @@
 <svelte:head>
   <title>Jamnasindo - Konsultan Perizinan & Legalitas Bisnis Terpercaya</title>
   <meta name="description" content="JNI Consultant - Partner terpercaya untuk izin PPIU, PIHK, Kontraktor, VISA, Akreditasi IATA, Bank Garansi, dan Perpajakan." />
+  <link rel="canonical" href="https://jamnasindo.id/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jamnasindo.id/" />
+  <meta property="og:title" content="Jamnasindo - Konsultan Perizinan & Legalitas Bisnis Terpercaya" />
+  <meta property="og:description" content="JNI Consultant - Partner terpercaya untuk izin PPIU, PIHK, Kontraktor, VISA, Akreditasi IATA, Bank Garansi, dan Perpajakan." />
+  <meta property="og:image" content="https://jamnasindo.id/images/hero-section.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
+
+<JsonLd data={organizationSchema} />
 
 <!-- HERO SECTION -->
 <section class="hero">
@@ -86,7 +130,7 @@
               {#if service.icon_svg}
                 {@html service.icon_svg}
               {:else if service.image_url}
-                <img src={service.image_url} alt={service.title} style="width:40px;height:40px;object-fit:contain;" />
+                <img src={service.image_url} alt={service.title} loading="lazy" style="width:40px;height:40px;object-fit:contain;" />
               {/if}
             </div>
             <h3>{service.title}</h3>
@@ -122,7 +166,7 @@
             <div class="stars">{'★'.repeat(t.rating)}</div>
             <p class="review-text">"{t.review_text}"</p>
             <div class="client-info">
-              <img src={t.photo_url} alt={t.client_name} class="client-avatar" onerror={handleAvatarError} />
+              <img src={t.photo_url} alt={t.client_name} class="client-avatar" loading="lazy" onerror={handleAvatarError} />
               <div>
                 <div class="client-name">{t.client_name}</div>
                 <div class="client-role">{t.client_role}</div>
@@ -141,7 +185,7 @@
               <div class="stars">{'★'.repeat(t.rating)}</div>
               <p class="review-text">"{t.review_text}"</p>
               <div class="client-info">
-                <img src={t.photo_url} alt={t.client_name} class="client-avatar" onerror={handleAvatarError} />
+                <img src={t.photo_url} alt={t.client_name} class="client-avatar" loading="lazy" onerror={handleAvatarError} />
                 <div>
                   <div class="client-name">{t.client_name}</div>
                   <div class="client-role">{t.client_role}</div>
@@ -172,7 +216,7 @@
       <div class="marquee-track scroll-right">
         {#each clientRow1 as client}
           <div class="marquee-logo">
-            <img src={client.logo_path} alt={client.client_name} onerror={handleImageError} />
+            <img src={client.logo_path} alt={client.client_name} loading="lazy" onerror={handleImageError} />
           </div>
         {/each}
       </div>
@@ -181,7 +225,7 @@
       <div class="marquee-track scroll-left">
         {#each clientRow2 as client}
           <div class="marquee-logo">
-            <img src={client.logo_path} alt={client.client_name} onerror={handleImageError} />
+            <img src={client.logo_path} alt={client.client_name} loading="lazy" onerror={handleImageError} />
           </div>
         {/each}
       </div>

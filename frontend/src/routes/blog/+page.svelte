@@ -5,6 +5,12 @@
 <svelte:head>
   <title>Artikel & Berita - Jamnasindo</title>
   <meta name="description" content="Baca artikel terbaru seputar perizinan, legalitas bisnis, dan tips untuk pengusaha dari JNI Consultant." />
+  <link rel="canonical" href="https://jamnasindo.id/blog" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jamnasindo.id/blog" />
+  <meta property="og:title" content="Artikel & Berita - Jamnasindo" />
+  <meta property="og:description" content="Baca artikel terbaru seputar perizinan, legalitas bisnis, dan tips untuk pengusaha dari JNI Consultant." />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <section class="page-header">
@@ -26,7 +32,7 @@
           <a href="/blog/{article.slug}" class="article-card">
             <div class="article-image">
               {#if article.image_url}
-                <img src={article.image_url} alt={article.title} />
+                <img src={article.image_url} alt={article.title} loading="lazy" />
               {:else}
                 <div class="article-placeholder">📰</div>
               {/if}
